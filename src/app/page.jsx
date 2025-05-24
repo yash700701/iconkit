@@ -251,7 +251,7 @@ export default function Home() {
        <div className='grid sm:grid-cols-10'>
 
           {/* tools */}
-          <div className='order-2 overflow-y-scroll max-h-[50vh] sm:max-h-[80vh] sm:order-1 text-lg sm:col-span-4  p-5 '>
+          <div className='order-2 sm:border-r-[1px] border-black overflow-y-scroll max-h-[50vh] sm:max-h-[80vh] sm:order-1 text-lg sm:col-span-4  p-5 '>
             <div className='flex'>
               <p className='text-zinc-600'>Icon</p>
               <button onClick={()=>setIcon("text")} className={`border-[2px] ${icon == "text" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-5 hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Text</button>
@@ -430,6 +430,7 @@ export default function Home() {
 
 
 
+             <h1 className='text-sm text-zinc-500 text-center py-5'>Made by <span className='text-sky-600'><a href="https://portfolio-yashtiwari.vercel.app/">@yash</a></span></h1>
 
           </div>
 

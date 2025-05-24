@@ -66,8 +66,8 @@ export async function POST(req) {
     const downloadWeb = formData.get('downloadWeb') == 'true';
     const downloadWindows = formData.get('downloadWindows') == 'true';
 
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    // const arrayBuffer = await file.arrayBuffer();
+    // const buffer = Buffer.from(arrayBuffer);
     const zip = new JSZip();
 
     // const sizesForIos = [60, 120, 180]
