@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { createCanvas, loadImage } from 'canvas';
-import sharp from 'sharp';
+import { createCanvas } from 'canvas';
+// import sharp from 'sharp';
 import JSZip from 'jszip';
-import toIco from 'png-to-ico';
+// import toIco from 'png-to-ico';
 
 export const config = {
   api: {
@@ -44,19 +44,19 @@ export async function POST(req) {
     const icon = formData.get('icon');
 
     // fields
-    const file = formData.get('image');
+    // const file = formData.get('image');
     const shape = formData.get('shape');
     const text = formData.get('text') || '';
     const textColor = formData.get('textColor') || '#000000';
     const bgColor = formData.get('bgColor') || '#ffffff';   
     const bold = formData.get('bold') === 'true';
     const italic = formData.get('italic') === 'true';
-    const bgType = formData.get('bgType');
-    const padding = formData.get('padding');
+    // const bgType = formData.get('bgType');
+    // const padding = formData.get('padding');
     const badgeText = formData.get('badgeText');
     const badgeTextColor = formData.get('badgeTextColor');
     const badgeTextBgColor = formData.get('badgeTextBgColor');
-    const paddingForImage = formData.get('paddingForImage');
+    // const paddingForImage = formData.get('paddingForImage');
 
     // download fields
     const downloadAndroid = formData.get('downloadAndroid') == 'true';
@@ -69,13 +69,13 @@ export async function POST(req) {
     // const buffer = Buffer.from(arrayBuffer);
     const zip = new JSZip();
 
-    const sizesForIos = [60, 120, 180]
+    // const sizesForIos = [60, 120, 180]
 
     const sizesForAndroid = [48, 72, 96, 144, 192]
 
-    const sizesForWeb = [16, 32, 48, 64, 96, 128, 180, 192, 256, 512]
+    // const sizesForWeb = [16, 32, 48, 64, 96, 128, 180, 192, 256, 512]
 
-    const sizesForLinux = [16, 22, 24, 32, 48, 64, 96, 128, 256, 512]
+    // const sizesForLinux = [16, 22, 24, 32, 48, 64, 96, 128, 256, 512]
 
     if (icon === "text") {
 
