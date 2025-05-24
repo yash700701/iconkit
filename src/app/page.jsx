@@ -43,6 +43,7 @@ export default function Home() {
   const pickerRefBg = useRef();
   const [bgType, setBgType] = useState("color");
   const [shape, setShape] = useState("squircle");
+  const [imageShape, setImageShape] = useState("squircle");
   const [badgeText, setBadgeText] = useState("");
   const [badgeTextColor, setBadgeTextColor] = useState('#000000');
   const [showPickerForBadgeText, setShowPickerForBadgeText] = useState(false);
@@ -50,15 +51,6 @@ export default function Home() {
   const [badgeTextBgColor, setBadgeTextBgColor] = useState('#2dd4bf');
   const [showPickerForBadgeBg, setShowPickerForBadgeBg] = useState(false);
   const pickerRefBadgeBg = useRef();
-
-  const handlePaddingChangeForImage = (e) => {
-    const value = Number(e.target.value);
-    if (value >= 0) {
-      setPaddingForImage(value);
-    } else {
-      setPaddingForImage(0); 
-    }
-  };
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
@@ -120,6 +112,7 @@ export default function Home() {
     const formData = new FormData();
     formData.append('image', file);
     formData.append('shape', shape);
+    formData.append('imageShape', imageShape);
     formData.append('icon', icon);
     formData.append('text', text);
     formData.append('bold', bold);
@@ -258,7 +251,7 @@ export default function Home() {
        <div className='grid sm:grid-cols-10'>
 
           {/* tools */}
-          <div className='order-2 bg-white overflow-y-scroll max-h-[50vh] sm:max-h-[80vh] sm:order-1 text-lg sm:col-span-4  p-5 '>
+          <div className='order-2 overflow-y-scroll max-h-[50vh] sm:max-h-[80vh] sm:order-1 text-lg sm:col-span-4  p-5 '>
             <div className='flex'>
               <p className='text-zinc-600'>Icon</p>
               <button onClick={()=>setIcon("text")} className={`border-[2px] ${icon == "text" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-5 hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Text</button>
@@ -278,10 +271,21 @@ export default function Home() {
               className={`border-[1px] mt-2 p-1 rounded-md text-lg text-zinc-600 ${icon == "image" ? "flex" : "hidden"}`}
             />
 
+            <div className={`flex mt-2   ${icon == "image" ? "flex" : "hidden"}`}>
+              <p className={`text-zinc-600`}>Image shape</p>
+              <button onClick={()=>setImageShape("square")} className={`border-[2px] ${imageShape == "square" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-5 hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Square</button>
+              <button onClick={()=>setImageShape("squircle")} className={`border-[2px] ${imageShape == "squircle" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Squircle</button>
+              <button onClick={()=>setImageShape("circle")} className={`border-[2px] ${imageShape == "circle" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Circle</button>
+            </div>
+
             <div className={`mt-2 flex-wrap ${icon == "image" ? "flex" : "hidden"}`}>
               <div className=' flex mt-2'>
                 <p className='text-zinc-600'>Padding</p>
-                   <Input type='number' placeholder='10' className='h-5 w-20 rounded-md ml-5' value={paddingForImage}  onChange={handlePaddingChangeForImage}/>
+                <button onClick={()=>setPaddingForImage(0)} className={`border-[2px] ${paddingForImage == 0 ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>0</button>
+                <button onClick={()=>setPaddingForImage(5)} className={`border-[2px] ${paddingForImage == 5 ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>5</button>
+                <button onClick={()=>setPaddingForImage(10)} className={`border-[2px] ${paddingForImage == 10 ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>10</button>
+                <button onClick={()=>setPaddingForImage(15)} className={`border-[2px] ${paddingForImage == 15 ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>15</button>
+                <button onClick={()=>setPaddingForImage(20)} className={`border-[2px] ${paddingForImage == 20 ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>20</button>
               </div>
             </div>
 
@@ -433,7 +437,7 @@ export default function Home() {
           <div className='order-1 sm:order-2 flex sm:flex-wrap overflow-x-scroll gap-10 sm:gap-3 md:gap-7 lg:gap-10 sm:col-span-6 sm:p-2 md:p-8 lg:p-15 p-5'>
 
               {isAndroidVisible ? (
-               <AndroidIcon text={text} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage}/>
+               <AndroidIcon text={text} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage* 0.8} imageShape = {imageShape}/>
               ) : (<div></div>)}
 
               {isAppleVisible ? (
