@@ -39,8 +39,8 @@ function AndroidIcon({ text, containerWidth, padding, shape, bgColor, icon, bold
   return (
      <div className='h-44 w-44 shadow-2xl shadow-blue-500 border-[2px] border-sky-700 rounded-2xl'>
         <div className='text-right px-3'></div>
-        <div className='flex justify-center items-center h-36 w-[172px] '>
-            <div  ref={containerRef} className={`relative flex justify-center overflow-hidden items-center w-20 h-20 ${shape == "circle" ? "rounded-full" : shape == "square" ? "rounded-sm" : "rounded-[25%]"} `}  style={{ backgroundColor: bgColor }} >
+        <div className='flex justify-center items-center  h-36 w-[172px] '>
+            <div  ref={containerRef} className={`relative shadow-2xl shadow-black flex justify-center overflow-hidden items-center w-20 h-20 ${shape == "circle" ? "rounded-full" : shape == "square" ? "rounded-none" : "rounded-[25%]"} `}  style={{ backgroundColor: bgColor }} >
                 <h1 ref={textRef} className={`${icon == "text" ? "flex" : "hidden"} ${bold ? "font-bold" : ""} ${italic ? "italic" : ""}`} style={{color: textColor,  fontSize: `${fontSize}px`, lineHeight: `${containerWidth}px`, whiteSpace: "nowrap",}}>
                     {text}
                 </h1>
@@ -54,7 +54,7 @@ function AndroidIcon({ text, containerWidth, padding, shape, bgColor, icon, bold
                     unoptimized
                     />
                 </div>
-                <div className={`absolute bottom-0 w-full overflow-hidden ${shape == "circle" ? "rounded-b-full" : shape == "square" ? "rounded-b-sm" : "rounded-b-[25%]"}`} style={{ background : badgeTextBgColor,}}>
+                <div className={`absolute bottom-0 w-full overflow-hidden ${shape == "circle" ? "rounded-b-full" : shape == "square" ? "rounded-b-none" : "rounded-b-[25%]"}`} style={{ background : badgeTextBgColor,}}>
                     <p className={`text-center text-xs font-bold ${badgeText.length > 0 ? "h-4" : "h-0"}`} style={{color : badgeTextColor}}>{badgeText}</p>
                 </div>
             </div>

@@ -19,6 +19,7 @@ import Link from 'next/link';
 
 export default function Home() {
   const [downloading, setDownloading] = useState(false);
+
   const [isAndroidVisible, setIsAndroidVisible] = useState(true);
   const [isAppleVisible, setIsAppleVisible] = useState(true);
   const [isWindowsVisible, setIsWindowsVisible] = useState(true);
@@ -131,6 +132,12 @@ export default function Home() {
     formData.append('badgeTextColor', badgeTextColor);
     formData.append('badgeTextBgColor', badgeTextBgColor);
     formData.append('paddingForImage', paddingForImage);
+
+    formData.append('downloadAndroid', isAndroidVisible);
+    formData.append('downloadApple', isAppleVisible);
+    formData.append('downloadLinux', isLinuxVisible);
+    formData.append('downloadWeb', isWebVisible);
+    formData.append('downloadWindows', isWindowsVisible);
 
     try {
       const res = await axios.post('/api/generate', formData, {
