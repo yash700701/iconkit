@@ -28,7 +28,7 @@ export default function Home() {
   // tools
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [icon, setIcon] = useState("text");
+  const [icon, setIcon] = useState("image");
   const [text, setText] = useState("IK");
   const [padding, setPadding] = useState(40);
   const [paddingForImage, setPaddingForImage] = useState(10);
@@ -112,6 +112,7 @@ export default function Home() {
 
     if (icon == "image" && !file){
       alert("select image");
+      setDownloading(false);
       return;
     };
 
@@ -173,11 +174,13 @@ export default function Home() {
       //   </button>
       // </form>
     // </div>
-    <div className='w-full h-screen bg-zinc-100'>
+    <div className='w-full min-h-screen bg-zinc-100'>
 
        {/* header */}
-       <div className='w-full flex text-zinc-800 px-5 justify-between items-center h-16 border-[1px] border-black'>
-            <div className='flex font-bold '>
+       <div className='w-full flex flex-wrap justify-between text-zinc-800 px-5 items-center py-2 border-[1px] border-black'>
+            
+            {/* icon */}
+            <div className='flex font-bold py-2'>
               <div className={`bg-black flex h-12 w-12 rounded-[25%] justify-center items-center`}>
                     <Image
                     src={logo}
@@ -190,40 +193,43 @@ export default function Home() {
               </div>
               <h1 className='text-4xl ml-2'>IconKit</h1>
             </div>
-            <div className='flex gap-5'>
+
+            {/* plateforms */}
+            <div className='flex gap-2 sm:gap-5 overflow-x-scroll py-2'>
               <div className={`flex items-center border-[2px] px-4 py-1 rounded-full hover:shadow-lg hover:bg-zinc-20  ${isAndroidVisible ? "border-sky-700" : "border-zinc-400"}`}>
                 <p className='pr-5'>Android</p> 
-                <button className='cursor-pointer' onClick={()=>{setIsAndroidVisible((prev)=>!prev)}}>
+                <button className='cursor-pointer w-5 h-5' onClick={()=>{setIsAndroidVisible((prev)=>!prev)}}>
                   <Image src={isAndroidVisible ? remove : select} className='h-5 w-5' alt="x" />
                 </button>
               </div>
               <div className={`flex items-center border-[2px] px-4 py-1 rounded-full hover:shadow-lg hover:bg-zinc-20  ${isAppleVisible ? "border-sky-700" : "border-zinc-400"}`}>
                 <p className='pr-5'>Apple</p> 
-                <button className='cursor-pointer' onClick={()=>{setIsAppleVisible((prev)=>!prev)}}>
+                <button className='cursor-pointer w-5 h-5' onClick={()=>{setIsAppleVisible((prev)=>!prev)}}>
                   <Image src={isAppleVisible ? remove : select} className='h-5 w-5' alt="x" />
                 </button>
               </div>
               <div className={`flex items-center border-[2px] px-4 py-1 rounded-full hover:shadow-lg hover:bg-zinc-20  ${isWebVisible ? "border-sky-700" : "border-zinc-400"}`}>
                 <p className='pr-5'>Web</p> 
-                <button className='cursor-pointer' onClick={()=>{setIsWebVisible((prev)=>!prev)}}>
+                <button className='cursor-pointer w-5 h-5' onClick={()=>{setIsWebVisible((prev)=>!prev)}}>
                   <Image src={isWebVisible ? remove : select} className='h-5 w-5' alt="x" />
                 </button>
               </div>
               <div className={`flex items-center border-[2px] px-4 py-1 rounded-full hover:shadow-lg hover:bg-zinc-20  ${isWindowsVisible ? "border-sky-700" : "border-zinc-400"}`}>
                 <p className='pr-5'>Windows</p> 
-                <button className='cursor-pointer' onClick={()=>{setIsWindowsVisible((prev)=>!prev)}}>
+                <button className='cursor-pointer w-5 h-5' onClick={()=>{setIsWindowsVisible((prev)=>!prev)}}>
                   <Image src={isWindowsVisible ? remove : select} className='h-5 w-5' alt="x" />
                 </button>
               </div>
               <div className={`flex items-center border-[2px] px-4 py-1 rounded-full hover:shadow-lg hover:bg-zinc-20  ${isLinuxVisible ? "border-sky-700" : "border-zinc-400"}`}>
                 <p className='pr-5'>Linux</p> 
-                <button className='cursor-pointer' onClick={()=>{setIsLinuxVisible((prev)=>!prev)}}>
+                <button className='cursor-pointer w-5 h-5' onClick={()=>{setIsLinuxVisible((prev)=>!prev)}}>
                   <Image src={isLinuxVisible ? remove : select} className='h-5 w-5' alt="x" />
                 </button>
               </div>
-             
             </div>
-            <div className='flex gap-4 items-center'>
+ 
+            {/* download and docs */}
+            <div className='flex gap-4 py-2 items-center'>
               <Link href={'/docs'}>
               <button className='flex items-center border-[2px] px-4 py-1 rounded-full hover:shadow-lg hover:bg-zinc-200 cursor-pointer'>
                 ?
@@ -238,14 +244,15 @@ export default function Home() {
                 />
               </button>
             </div>
+
        </div>
 
        {/* body */}
-       <div className='grid grid-cols-10'>
+       <div className='grid sm:grid-cols-10'>
 
           {/* tools */}
-          <div className=' text-lg col-span-3 bg-sky-100 p-5 h-[90vh]'>
-            <div className=' flex'>
+          <div className='order-2 bg-white overflow-y-scroll max-h-[50vh] sm:max-h-[80vh] sm:order-1 text-lg sm:col-span-4  p-5 '>
+            <div className='flex'>
               <p className='text-zinc-600'>Icon</p>
               <button onClick={()=>setIcon("text")} className={`border-[2px] ${icon == "text" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-5 hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Text</button>
               <button onClick={()=>setIcon("image")} className={`border-[2px] ${icon == "image" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Image</button>
@@ -409,15 +416,21 @@ export default function Home() {
 
 
 
+
+
+
+
           </div>
 
           {/* preview */}
-          <div className='flex flex-wrap gap-10 col-span-7 p-20'>
+          <div className='order-1 sm:order-2 flex sm:flex-wrap overflow-x-scroll gap-10 sm:gap-3 md:gap-7 lg:gap-10 sm:col-span-6 sm:p-2 md:p-8 lg:p-15 p-5'>
+
               {isAndroidVisible ? (
                <AndroidIcon text={text} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage}/>
               ) : (<div></div>)}
+
               {isAppleVisible ? (
-                <div className='h-44 w-44 shadow-2xl border-[2px] border-sky-700 rounded-2xl'>
+                <div className='h-44 w-44 shadow-2xl shadow-emerald-500 border-[2px] border-sky-700 rounded-2xl'>
                   <div className='text-right px-3'></div>
                   <div className='h-36 w-44 '>
 
@@ -425,38 +438,41 @@ export default function Home() {
                   <div className='text-center '>Apple Icon</div>
                 </div>
               ) : (<div></div>)}
+
               {isWebVisible ? (
-                <div className='h-44 w-44 shadow-2xl border-[2px] border-sky-700 rounded-2xl'>
+                <div className='h-44 w-44 shadow-2xl shadow-purple-500 border-[2px] border-sky-700 rounded-2xl'>
                   <div className='text-right px-3'></div>
                   <div className='h-36 w-44 '>
-
-
-
                   </div>
                   <div className='text-center '>Favicon Icon</div>
                 </div>
               ) : (<div></div>)}
+              
               {isWindowsVisible ? (
-                <div className='h-44 w-44 shadow-2xl border-[2px] border-sky-700 rounded-2xl'>
+                <div className='h-44 w-44 shadow-2xl shadow-rose-500 border-[2px] border-sky-700 rounded-2xl'>
                   <div className='text-right px-3'></div>
                   <div className='h-36 w-44 '>
-
                   </div>
                   <div className='text-center '>Windows Icon</div>
                 </div>
               ) : (<div></div>)}
+
               {isLinuxVisible ? (
-                <div className='h-44 w-44 shadow-2xl border-[2px] border-sky-700 rounded-2xl'>
+                <div className='h-44 w-44 shadow-2xl shadow-amber-500 border-[2px] border-sky-700 rounded-2xl'>
                   <div className='text-right px-3'></div>
                   <div className='h-36 w-44 '>
-
                   </div>
                   <div className='text-center '>Linux Icon</div>
                 </div>
               ) : (<div></div>)}
-          </div>
 
+          </div>
        </div> 
     </div>
   );
 }
+
+
+
+
+
