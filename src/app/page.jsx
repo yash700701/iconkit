@@ -10,6 +10,7 @@ import download from '@/icons/downloading.png'
 
 import { Input } from "@/components/ui/input"
 import AndroidIcon from './androidIcon';
+import FaviconIcon from './faviconIcon';
 import logo from '@/icons/Flower-icon.png'
 
 import remove from '../icons/remove.png'
@@ -209,7 +210,7 @@ export default function Home() {
                 </button>
               </div>
               <div className={`flex items-center border-[2px] px-4 py-1 rounded-full hover:shadow-lg hover:bg-zinc-20  ${isWebVisible ? "border-sky-700" : "border-zinc-400"}`}>
-                <p className='pr-5'>Web</p> 
+                <p className='pr-5'>Favicon</p> 
                 <button className='cursor-pointer w-5 h-5' onClick={()=>{setIsWebVisible((prev)=>!prev)}}>
                   <Image src={isWebVisible ? remove : select} className='h-5 w-5' alt="x" />
                 </button>
@@ -442,22 +443,16 @@ export default function Home() {
               ) : (<div></div>)}
 
               {isAppleVisible ? (
-                <div className='h-44 w-44 shadow-2xl shadow-emerald-500 border-[2px] border-sky-700 rounded-2xl'>
+                <div className='h-44 w-44 shadow-2xl shadow-rose-500 border-[2px] border-sky-700 rounded-2xl'>
                   <div className='text-right px-3'></div>
                   <div className='h-36 w-44 '>
-
                   </div>
                   <div className='text-center '>Apple Icon</div>
                 </div>
               ) : (<div></div>)}
 
               {isWebVisible ? (
-                <div className='h-44 w-44 shadow-2xl shadow-purple-500 border-[2px] border-sky-700 rounded-2xl'>
-                  <div className='text-right px-3'></div>
-                  <div className='h-36 w-44 '>
-                  </div>
-                  <div className='text-center '>Favicon Icon</div>
-                </div>
+                 <FaviconIcon text={text} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage* 0.8} imageShape = {imageShape}/>
               ) : (<div></div>)}
               
               {isWindowsVisible ? (
