@@ -67,18 +67,20 @@ export async function POST(req) {
     const downloadWindows = formData.get('downloadWindows') == 'true';
 
     const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    const bufferForImage = Buffer.from(arrayBuffer);
     const zip = new JSZip();
 
     // const sizesForIos = [60, 120, 180]
-    const sizesForAndroid = [48, 72, 96, 144, 192]
+    const sizesForAndroidLagacy = [48, 72, 96, 144, 192]
+    const sizesForAndroidAdaptive = [108, 162, 216, 324, 432]
     const sizesForWeb = [16, 32, 48, 64, 180, 192, 512]
     // const sizesForLinux = [16, 22, 24, 32, 48, 64, 96, 128, 256, 512]`
 
     if (icon === "text") {
 
       if(downloadAndroid){
-          for (const size of sizesForAndroid) {
+
+          for (const size of sizesForAndroidLagacy) {
             const canvas = createCanvas(size, size);
             const ctx = canvas.getContext('2d'); 
 
@@ -150,8 +152,180 @@ export async function POST(req) {
 
             // ✅ Generate buffer from canvas and add to zip
             const iconBuffer = canvas.toBuffer('image/png');
-            zip.file(`Android/icon-${size}x${size}.png`, iconBuffer);
+            if(size == 48){
+              zip.file(`android/mipmap-mdpi/ic_launcher.png`, iconBuffer);
+            }else if(size == 72){
+              zip.file(`android/mipmap-hdpi/ic_launcher.png`, iconBuffer);
+            }else if(size == 96){
+              zip.file(`android/mipmap-xhdpi/ic_launcher.png`, iconBuffer);
+            }else if(size == 144){
+              zip.file(`android/mipmap-xxhdpi/ic_launcher.png`, iconBuffer);
+            }else{
+              zip.file(`android/mipmap-xxxhdpi/ic_launcher.png`, iconBuffer);
+            }
           }
+
+          for (const size of sizesForAndroidAdaptive) {
+            const canvasForBg = createCanvas(size, size);
+            const ctxForBg = canvasForBg.getContext('2d'); 
+
+            // === Background shape ===
+            ctxForBg.fillStyle = bgColor;
+            ctxForBg.fillRect(0, 0, size, size);
+            const androidAdaptiveBackgroundBuffer = canvasForBg.toBuffer('image/png');
+             if(size == 108){
+              zip.file(`android/mipmap-mdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+            }else if(size == 162){
+              zip.file(`android/mipmap-hdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+            }else if(size == 216){
+              zip.file(`android/mipmap-xhdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+            }else if(size == 324){
+              zip.file(`android/mipmap-xxhdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+            }else{
+              zip.file(`android/mipmap-xxxhdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+            }
+           
+            // === Foreground ===
+            const canvasForFg = createCanvas(size, size);
+            const ctxForFg = canvasForFg.getContext('2d'); 
+            const padding = size * 0.1;
+
+            // === Auto-adjust font size for main text ===
+            let fontSize = size;
+            ctxForFg.textAlign = 'center';
+            ctxForFg.textBaseline = 'middle';
+
+            while (fontSize > 5) {
+              ctxForFg.font = `${italic ? 'italic ' : ''}${bold ? 'bold ' : ''}${fontSize}px sans-serif`;
+              const metrics = ctxForFg.measureText(text);
+              const textWidth = metrics.width;
+              const textHeight = (metrics.actualBoundingBoxAscent ?? fontSize * 0.8) + (metrics.actualBoundingBoxDescent ?? fontSize * 0.2);
+
+              if (textWidth <= size - 2.5 * padding && textHeight <= size - 2.5 * padding) break;
+              fontSize -= 1;
+            }
+
+            // === Draw main text ===
+            ctxForFg.fillStyle = textColor;
+            ctxForFg.font = `${italic ? 'italic ' : ''}${bold ? 'bold ' : ''}${fontSize}px sans-serif`;
+            ctxForFg.fillText(text, size / 2, size / 2);
+
+            if(badgeText.length > 0){
+              // === Draw badge strip with rounded bottom matching shape ===
+              const badgeHeight = size * 0.20;
+              ctxForFg.save(); // Save current drawing state
+
+              if (shape === 'circle') {
+                ctxForFg.beginPath();
+                ctxForFg.arc(size / 2, size / 2, size / 2, 0, Math.PI);
+                ctxForFg.rect(0, size - badgeHeight, size, badgeHeight); // ensure bottom portion is covered
+                ctxForFg.clip();
+              } else if (shape === 'squircle') {
+                ctxForFg.beginPath();
+                drawBottomRoundedRect(ctxForFg, 0, size - badgeHeight, size, badgeHeight, size * 0.25);
+                ctxForFg.clip();
+              }
+              // Square doesn't need clipping
+
+              ctxForFg.fillStyle = badgeTextBgColor;
+              ctxForFg.fillRect(0, size - badgeHeight, size, badgeHeight);
+
+              ctxForFg.restore(); // Restore so text is not clipped
+
+              // === Draw badge text ===
+              ctxForFg.fillStyle = badgeTextColor;
+              ctxForFg.font = `bold ${badgeHeight * 0.5}px sans-serif`;
+              ctxForFg.textAlign = 'center';
+              ctxForFg.textBaseline = 'middle';
+              ctxForFg.fillText(badgeText, size / 2, size - badgeHeight / 2);
+            }
+
+            // ✅ Generate buffer from canvas and add to zip
+             const androidAdaptiveForegroundBuffer = canvasForFg.toBuffer('image/png');
+             if(size == 108){
+              zip.file(`android/mipmap-mdpi/ic_launcher_Foreground.png`, androidAdaptiveForegroundBuffer);
+            }else if(size == 162){
+              zip.file(`android/mipmap-hdpi/ic_launcher_Foreground.png`, androidAdaptiveForegroundBuffer);
+            }else if(size == 216){
+              zip.file(`android/mipmap-xhdpi/ic_launcher_Foreground.png`, androidAdaptiveForegroundBuffer);
+            }else if(size == 324){
+              zip.file(`android/mipmap-xxhdpi/ic_launcher_Foreground.png`, androidAdaptiveForegroundBuffer);
+            }else{
+              zip.file(`android/mipmap-xxxhdpi/ic_launcher_Foreground.png`, androidAdaptiveForegroundBuffer);
+            }
+            
+            // === monochrome ===
+
+            const canvasForMonochrome = createCanvas(size, size);
+            const ctxForMc = canvasForMonochrome.getContext('2d'); 
+            const paddingMc = size * 0.1;
+
+            // === Auto-adjust font size for main text ===
+            let fontSizeMc = size;
+            ctxForMc.textAlign = 'center';
+            ctxForMc.textBaseline = 'middle';
+
+            while (fontSizeMc > 5) {
+              ctxForMc.font = `${italic ? 'italic ' : ''}${bold ? 'bold ' : ''}${fontSizeMc}px sans-serif`;
+              const metrics = ctxForMc.measureText(text);
+              const textWidth = metrics.width;
+              const textHeight = (metrics.actualBoundingBoxAscent ?? fontSizeMc * 0.8) + (metrics.actualBoundingBoxDescent ?? fontSizeMc * 0.2);
+
+              if (textWidth <= size - 2.5 * paddingMc && textHeight <= size - 2.5 * paddingMc) break;
+              fontSizeMc -= 1;
+            }
+
+            // === Draw main text ===
+            ctxForMc.fillStyle = `#FFFFFF`;
+            ctxForMc.font = `${italic ? 'italic ' : ''}${bold ? 'bold ' : ''}${fontSizeMc}px sans-serif`;
+            ctxForMc.fillText(text, size / 2, size / 2);
+
+            if(badgeText.length > 0){
+              // === Draw badge strip with rounded bottom matching shape ===
+              const badgeHeight = size * 0.20;
+              ctxForMc.save(); // Save current drawing state
+
+              if (shape === 'circle') {
+                ctxForMc.beginPath();
+                ctxForMc.arc(size / 2, size / 2, size / 2, 0, Math.PI);
+                ctxForMc.rect(0, size - badgeHeight, size, badgeHeight); // ensure bottom portion is covered
+                ctxForMc.clip();
+              } else if (shape === 'squircle') {
+                ctxForMc.beginPath();
+                drawBottomRoundedRect(ctxForMc, 0, size - badgeHeight, size, badgeHeight, size * 0.25);
+                ctxForMc.clip();
+              }
+              // Square doesn't need clipping
+
+              ctxForMc.fillStyle = `#FFFFFF`;
+              ctxForMc.fillRect(0, size - badgeHeight, size, badgeHeight);
+
+              ctxForMc.restore(); // Restore so text is not clipped
+
+              // === Draw badge text ===
+              ctxForMc.fillStyle = `#000000`;
+              ctxForMc.font = `bold ${badgeHeight * 0.5}px sans-serif`;
+              ctxForMc.textAlign = 'center';
+              ctxForMc.textBaseline = 'middle';
+              ctxForMc.fillText(badgeText, size / 2, size - badgeHeight / 2);
+            }
+
+            // ✅ Generate buffer from canvas and add to zip
+             const androidAdaptiveMonochromeBuffer = canvasForMonochrome.toBuffer('image/png');
+             if(size == 108){
+              zip.file(`android/mipmap-mdpi/ic_launcher_monochrome.png`, androidAdaptiveMonochromeBuffer);
+            }else if(size == 162){
+              zip.file(`android/mipmap-hdpi/ic_launcher_monochrome.png`, androidAdaptiveMonochromeBuffer);
+            }else if(size == 216){
+              zip.file(`android/mipmap-xhdpi/ic_launcher_monochrome.png`, androidAdaptiveMonochromeBuffer);
+            }else if(size == 324){
+              zip.file(`android/mipmap-xxhdpi/ic_launcher_monochrome.png`, androidAdaptiveMonochromeBuffer);
+            }else{
+              zip.file(`android/mipmap-xxxhdpi/ic_launcher_monochrome.png`, androidAdaptiveMonochromeBuffer);
+            }
+           
+          }
+
       }
 
       if(downloadApple){
@@ -174,7 +348,8 @@ export async function POST(req) {
     if (icon === "image") {
 
       if(downloadAndroid){
-          for (const size of sizesForAndroid) {
+
+          for (const size of sizesForAndroidLagacy) {
             const canvas = createCanvas(size, size);
             const ctx = canvas.getContext('2d');
 
@@ -193,7 +368,7 @@ export async function POST(req) {
             }
 
             // === Draw the image inside the clipped shape ===
-            const resizedImage = await sharp(buffer).resize(size, size).png().toBuffer();
+            const resizedImage = await sharp(bufferForImage).resize(size, size).png().toBuffer();
             const img = await loadImage(resizedImage);
 
             const padding = size * paddingForImage / 100;
@@ -251,7 +426,119 @@ export async function POST(req) {
 
             // === Export final image ===
             const outputBuffer = canvas.toBuffer('image/png');
-            zip.file(`Android/icon-${size}x${size}.png`, outputBuffer);
+            if(size == 48){
+              zip.file(`android/mipmap-mdpi/ic_launcher.png`, outputBuffer);
+            }else if(size == 72){
+              zip.file(`android/mipmap-hdpi/ic_launcher.png`, outputBuffer);
+            }else if(size == 96){
+              zip.file(`android/mipmap-xhdpi/ic_launcher.png`, outputBuffer);
+            }else if(size == 144){
+              zip.file(`android/mipmap-xxhdpi/ic_launcher.png`, outputBuffer);
+            }else{
+              zip.file(`android/mipmap-xxxhdpi/ic_launcher.png`, outputBuffer);
+            }
+
+          }
+
+          for (const size of sizesForAndroidAdaptive) {
+            const canvasForBg = createCanvas(size, size);
+            const ctxForBg = canvasForBg.getContext('2d'); 
+
+            // === Background shape ===
+            ctxForBg.fillStyle = bgColor;
+            ctxForBg.fillRect(0, 0, size, size);
+            const androidAdaptiveBackgroundBuffer = canvasForBg.toBuffer('image/png');
+             if(size == 108){
+              zip.file(`android/mipmap-mdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+            }else if(size == 162){
+              zip.file(`android/mipmap-hdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+            }else if(size == 216){
+              zip.file(`android/mipmap-xhdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+            }else if(size == 324){
+              zip.file(`android/mipmap-xxhdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+            }else{
+              zip.file(`android/mipmap-xxxhdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+            }
+
+
+            // === Draw the image inside the clipped shape ===
+            const canvasForFg = createCanvas(size, size);
+            const ctxForFg = canvasForFg.getContext('2d'); 
+
+            const resizedImage = await sharp(bufferForImage).resize(size, size).png().toBuffer();
+            const img = await loadImage(resizedImage);
+
+            const padding = size * paddingForImage / 100;
+
+            ctxForFg.save(); // Save state
+
+            if (imageShape === 'circle') {
+              ctxForFg.beginPath();
+              ctxForFg.arc(size / 2, size / 2, (size - 2 * padding) / 2, 0, 2 * Math.PI);
+              ctxForFg.clip();
+            } else if (imageShape === 'squircle') {
+              drawRoundedRect(ctxForFg, padding, padding, size - 2 * padding, size - 2 * padding, (size - 2 * padding) * 0.25);
+              ctxForFg.clip();
+            } else {
+              ctxForFg.beginPath();
+              ctxForFg.rect(padding, padding, size - 2 * padding, size - 2 * padding);
+              ctxForFg.clip();
+            }
+
+            // Then draw image with same padding
+            ctxForFg.drawImage(img, padding, padding, size - 2 * padding, size - 2 * padding);
+
+            ctxForFg.restore(); // Restore state
+
+
+            // === Draw badge strip with rounded bottom matching shape ===
+            if(badgeText.length > 0){
+              const badgeHeight = size * 0.20;
+              ctxForFg.save(); // Save current drawing state
+
+              if (shape === 'circle') {
+                ctxForFg.beginPath();
+                ctxForFg.arc(size / 2, size / 2, size / 2, 0, Math.PI);
+                ctxForFg.rect(0, size - badgeHeight, size, badgeHeight); // ensure bottom portion is covered
+                ctxForFg.clip();
+              } else if (shape === 'squircle') {
+                ctxForFg.beginPath();
+                drawBottomRoundedRect(ctxForFg, 0, size - badgeHeight, size, badgeHeight, size * 0.25);
+                ctxForFg.clip();
+              }
+              // Square doesn't need clipping
+
+              ctxForFg.fillStyle = badgeTextBgColor;
+              ctxForFg.fillRect(0, size - badgeHeight, size, badgeHeight);
+
+              ctxForFg.restore(); // Restore so text is not clipped
+
+              // === Draw badge text ===
+              ctxForFg.fillStyle = badgeTextColor;
+              ctxForFg.font = `bold ${badgeHeight * 0.5}px sans-serif`;
+              ctxForFg.textAlign = 'center';
+              ctxForFg.textBaseline = 'middle';
+              ctxForFg.fillText(badgeText, size / 2, size - badgeHeight / 2);
+            }
+
+            // === Export final image ===
+            const outputBuffer = canvasForFg.toBuffer('image/png');
+            if(size == 108){
+              zip.file(`android/mipmap-mdpi/ic_launcher_foreground.png`, outputBuffer);
+              zip.file(`android/mipmap-mdpi/ic_launcher_monochrome.png`, outputBuffer);
+            }else if(size == 162){
+              zip.file(`android/mipmap-hdpi/ic_launcher_foreground.png`, outputBuffer);
+              zip.file(`android/mipmap-hdpi/ic_launcher_monochrome.png`, outputBuffer);
+            }else if(size == 216){
+              zip.file(`android/mipmap-xhdpi/ic_launcher_foreground.png`, outputBuffer);
+              zip.file(`android/mipmap-xhdpi/ic_launcher_monochrome.png`, outputBuffer);
+            }else if(size == 324){
+              zip.file(`android/mipmap-xxhdpi/ic_launcher_foreground.png`, outputBuffer);
+              zip.file(`android/mipmap-xxdpi/ic_launcher_monochrome.png`, outputBuffer);
+            }else{
+              zip.file(`android/mipmap-xxxhdpi/ic_launcher_foreground.png`, outputBuffer);
+              zip.file(`android/mipmap-xxxdpi/ic_launcher_monochrome.png`, outputBuffer);
+            }
 
           }
       }

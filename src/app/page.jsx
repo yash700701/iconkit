@@ -11,6 +11,7 @@ import download from '@/icons/downloading.png'
 import { Input } from "@/components/ui/input"
 import AndroidIcon from './androidIcon';
 import FaviconIcon from './faviconIcon';
+import WindowsIcon from './windowsIcon';
 import logo from '@/icons/Flower-icon.png'
 
 import remove from '../icons/remove.png'
@@ -22,10 +23,10 @@ export default function Home() {
   const [downloading, setDownloading] = useState(false);
 
   const [isAndroidVisible, setIsAndroidVisible] = useState(true);
-  const [isAppleVisible, setIsAppleVisible] = useState(true);
-  const [isWindowsVisible, setIsWindowsVisible] = useState(true);
-  const [isWebVisible, setIsWebVisible] = useState(true);
-  const [isLinuxVisible, setIsLinuxVisible] = useState(true);
+  const [isAppleVisible, setIsAppleVisible] = useState(false);
+  const [isWindowsVisible, setIsWindowsVisible] = useState(false);
+  const [isWebVisible, setIsWebVisible] = useState(false);
+  const [isLinuxVisible, setIsLinuxVisible] = useState(false);
   
   // tools
   const [file, setFile] = useState(null);
@@ -456,12 +457,7 @@ export default function Home() {
               ) : (<div></div>)}
               
               {isWindowsVisible ? (
-                <div className='h-44 w-44 shadow-2xl shadow-rose-500 border-[2px] border-sky-700 rounded-2xl'>
-                  <div className='text-right px-3'></div>
-                  <div className='h-36 w-44 '>
-                  </div>
-                  <div className='text-center '>Windows Icon</div>
-                </div>
+                <WindowsIcon text={text} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage* 0.8} imageShape = {imageShape}/>
               ) : (<div></div>)}
 
               {isLinuxVisible ? (
