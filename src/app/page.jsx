@@ -10,6 +10,7 @@ import download from '@/icons/downloading.png'
 
 import { Input } from "@/components/ui/input"
 import AndroidIcon from './androidIcon';
+import AppleIcon from './appleIcon';
 import FaviconIcon from './faviconIcon';
 import WindowsIcon from './windowsIcon';
 import logo from '@/icons/Flower-icon.png'
@@ -23,9 +24,9 @@ export default function Home() {
   const [downloading, setDownloading] = useState(false);
 
   const [isAndroidVisible, setIsAndroidVisible] = useState(true);
-  const [isAppleVisible, setIsAppleVisible] = useState(false);
+  const [isAppleVisible, setIsAppleVisible] = useState(true);
   const [isWindowsVisible, setIsWindowsVisible] = useState(false);
-  const [isWebVisible, setIsWebVisible] = useState(false);
+  const [isWebVisible, setIsWebVisible] = useState(true);
   const [isLinuxVisible, setIsLinuxVisible] = useState(false);
   
   // tools
@@ -159,23 +160,7 @@ export default function Home() {
   };
 
   return (
-    // <div className="p-8">
-    //   <h1 className="text-2xl font-bold mb-4">Icon Generator</h1>
-      // <form onSubmit={handleSubmit}>
-      //   <input
-      //     type="file"
-      //     accept="image/*"
-      //     onChange={(e) => setFile(e.target.files[0])}
-      //     required
-      //   />
-      //   <button
-      //     type="submit"
-      //     className="ml-4 px-4 py-2 bg-blue-600 text-white rounded"
-      //   >
-      //     {downloading ? 'Processing...' : 'Generate Icons'}
-      //   </button>
-      // </form>
-    // </div>
+
     <div className='w-full min-h-screen bg-zinc-100'>
 
        {/* header */}
@@ -254,11 +239,11 @@ export default function Home() {
 
           {/* tools */}
           <div className='order-2 sm:border-r-[1px] border-black overflow-y-scroll max-h-[50vh] sm:max-h-[80vh] sm:order-1 text-lg sm:col-span-4  p-5 '>
-            <div className='flex'>
+            <div className='flex flex-wrap gap-3'>
               <p className='text-zinc-600'>Icon</p>
-              <button onClick={()=>setIcon("text")} className={`border-[2px] ${icon == "text" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-5 hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Text</button>
-              <button onClick={()=>setIcon("image")} className={`border-[2px] ${icon == "image" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Image</button>
-              <button onClick={()=>setIcon("clipart")} className={`border-[2px] ${icon == "clipart" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Clipart</button>
+              <button onClick={()=>setIcon("text")} className={`border-[2px] ${icon == "text" ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Text</button>
+              <button onClick={()=>setIcon("image")} className={`border-[2px] ${icon == "image" ? "border-sky-700" : "border-zinc-400"} cursor-pointer  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Image</button>
+              <button onClick={()=>setIcon("clipart")} className={`border-[2px] ${icon == "clipart" ? "border-sky-700" : "border-zinc-400"} cursor-pointer  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Clipart</button>
             </div>
 
             <div className={`mt-2 ${icon == "text" ? "flex" : "hidden"}`} >
@@ -268,35 +253,36 @@ export default function Home() {
 
             <input
               type="file"
+              name='image'
               accept="image/*"
               onChange={handleFileChange}
-              className={`border-[1px] mt-2 p-1 rounded-md text-lg text-zinc-600 ${icon == "image" ? "flex" : "hidden"}`}
+              className={`border-[1px] mt-2 p-1 w-full rounded-md text-lg text-zinc-600 ${icon == "image" ? "flex" : "hidden"}`}
             />
 
-            <div className={`flex mt-2   ${icon == "image" ? "flex" : "hidden"}`}>
+            <div className={`flex mt-2 flex-wrap gap-3   ${icon == "image" ? "flex" : "hidden"}`}>
               <p className={`text-zinc-600`}>Image shape</p>
-              <button onClick={()=>setImageShape("square")} className={`border-[2px] ${imageShape == "square" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-5 hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Square</button>
-              <button onClick={()=>setImageShape("squircle")} className={`border-[2px] ${imageShape == "squircle" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Squircle</button>
-              <button onClick={()=>setImageShape("circle")} className={`border-[2px] ${imageShape == "circle" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Circle</button>
+              <button onClick={()=>setImageShape("square")} className={`border-[2px] ${imageShape == "square" ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Square</button>
+              <button onClick={()=>setImageShape("squircle")} className={`border-[2px] ${imageShape == "squircle" ? "border-sky-700" : "border-zinc-400"} cursor-pointer  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Squircle</button>
+              <button onClick={()=>setImageShape("circle")} className={`border-[2px] ${imageShape == "circle" ? "border-sky-700" : "border-zinc-400"} cursor-pointer  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Circle</button>
             </div>
 
             <div className={`mt-2 flex-wrap ${icon == "image" ? "flex" : "hidden"}`}>
-              <div className=' flex mt-2'>
+              <div className=' flex mt-2 flex-wrap gap-3'>
                 <p className='text-zinc-600'>Padding</p>
-                <button onClick={()=>setPaddingForImage(0)} className={`border-[2px] ${paddingForImage == 0 ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>0</button>
-                <button onClick={()=>setPaddingForImage(5)} className={`border-[2px] ${paddingForImage == 5 ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>5</button>
-                <button onClick={()=>setPaddingForImage(10)} className={`border-[2px] ${paddingForImage == 10 ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>10</button>
-                <button onClick={()=>setPaddingForImage(15)} className={`border-[2px] ${paddingForImage == 15 ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>15</button>
-                <button onClick={()=>setPaddingForImage(20)} className={`border-[2px] ${paddingForImage == 20 ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>20</button>
+                <button onClick={()=>setPaddingForImage(0)} className={`border-[2px] ${paddingForImage == 0 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>0</button>
+                <button onClick={()=>setPaddingForImage(5)} className={`border-[2px] ${paddingForImage == 5 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>5</button>
+                <button onClick={()=>setPaddingForImage(10)} className={`border-[2px] ${paddingForImage == 10 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>10</button>
+                <button onClick={()=>setPaddingForImage(15)} className={`border-[2px] ${paddingForImage == 15 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>15</button>
+                <button onClick={()=>setPaddingForImage(20)} className={`border-[2px] ${paddingForImage == 20 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>20</button>
               </div>
             </div>
 
             <div className={`mt-2 flex-wrap ${icon == "text" ? "flex" : "hidden"}`}>
-              <div className=' flex mt-2'>
+              <div className=' flex mt-2 flex-wrap gap-3'>
                 <p className='text-zinc-600'>Padding</p>
-                <button onClick={()=>setPadding(20)} className={`border-[2px] ${padding == 20 ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>20</button>
-                <button onClick={()=>setPadding(30)} className={`border-[2px] ${padding == 30 ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>30</button>
-                <button onClick={()=>setPadding(40)} className={`border-[2px] ${padding == 40 ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>40</button>
+                <button onClick={()=>setPadding(20)} className={`border-[2px] ${padding == 20 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>20</button>
+                <button onClick={()=>setPadding(30)} className={`border-[2px] ${padding == 30 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>30</button>
+                <button onClick={()=>setPadding(40)} className={`border-[2px] ${padding == 40 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>40</button>
               </div>
             </div>
 
@@ -333,11 +319,11 @@ export default function Home() {
 
             <h1 className='mt-2'>Background</h1>
 
-            <div className=' flex mt-2'>
+            <div className=' flex mt-2 flex-wrap gap-3'>
               <p className='text-zinc-600'>Type</p>
-              <button onClick={()=>setBgType("color")} className={`border-[2px] ${bgType == "color" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-5 hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Color</button>
-              <button onClick={()=>setBgType("gradient")} className={`border-[2px] ${bgType == "gradient" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Gradient</button>
-              <button onClick={()=>setBgType("image")} className={`border-[2px] ${bgType == "image" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Image</button>
+              <button onClick={()=>setBgType("color")} className={`border-[2px] ${bgType == "color" ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Color</button>
+              <button onClick={()=>setBgType("gradient")} className={`border-[2px] ${bgType == "gradient" ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Gradient</button>
+              <button onClick={()=>setBgType("image")} className={`border-[2px] ${bgType == "image" ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Image</button>
             </div>
 
             <div className={`relative flex mt-2 items-center  ${bgType == "color" ? "flex" : "hidden"}`}>
@@ -365,20 +351,20 @@ export default function Home() {
 
             <h1 className='mt-2'>More</h1>
 
-            <div className=' flex mt-2'>
+            <div className=' flex mt-2 flex-wrap gap-3'>
               <p className='text-zinc-600'>Shape</p>
-              <button onClick={()=>setShape("square")} className={`border-[2px] ${shape == "square" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-5 hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Square</button>
-              <button onClick={()=>setShape("squircle")} className={`border-[2px] ${shape == "squircle" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Squircle</button>
-              <button onClick={()=>setShape("circle")} className={`border-[2px] ${shape == "circle" ? "border-sky-700" : "border-zinc-400"} cursor-pointer ml-2  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Circle</button>
+              <button onClick={()=>setShape("square")} className={`border-[2px] ${shape == "square" ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Square</button>
+              <button onClick={()=>setShape("squircle")} className={`border-[2px] ${shape == "squircle" ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Squircle</button>
+              <button onClick={()=>setShape("circle")} className={`border-[2px] ${shape == "circle" ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Circle</button>
             </div>
 
             <div className={`mt-2 flex`} >
               <p className='text-zinc-600'>Badge</p>
-              <Input type="text" placeholder="Aa" value={badgeText} onChange={(e)=> setBadgeText(e.target.value)} className='h-5 w-40 mt-1 ml-5 rounded-sm' />
+              <Input type="text" placeholder="Aa" value={badgeText} onChange={(e)=> setBadgeText(e.target.value)} className='h-5 w-full mt-1 ml-5 rounded-sm' />
             </div>
            
-            <div className='flex'>
-                <div className="relative flex mt-2 items-center">
+            <div className='flex flex-wrap mt-2 gap-3'>
+                <div className="relative flex items-center">
                 {/* Swatch */}
                 <p className='text-zinc-600'>Badge text</p>
                 <div
@@ -401,7 +387,7 @@ export default function Home() {
                 )}
               </div>
 
-              <div className="relative flex mt-2 ml-5 items-center">
+              <div className="relative flex items-center">
                 {/* Swatch */}
                 <p className='text-zinc-600'>Badge bg</p>
                 <div
@@ -437,19 +423,14 @@ export default function Home() {
           </div>
 
           {/* preview */}
-          <div className='order-1 sm:order-2 flex sm:flex-wrap overflow-x-scroll gap-10 sm:gap-3 md:gap-7 lg:gap-10 sm:col-span-6 sm:p-2 md:p-8 lg:p-15 p-5'>
+          <div className='order-1 sm:order-2 flex sm:flex-wrap overflow-x-scroll gap-5 sm:gap-3 md:gap-7 lg:gap-10 sm:col-span-6 sm:p-2 md:p-8 lg:p-15 p-5'>
 
               {isAndroidVisible ? (
                <AndroidIcon text={text} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage* 0.8} imageShape = {imageShape}/>
               ) : (<div></div>)}
 
               {isAppleVisible ? (
-                <div className='h-44 w-44 shadow-2xl shadow-rose-500 border-[2px] border-sky-700 rounded-2xl'>
-                  <div className='text-right px-3'></div>
-                  <div className='h-36 w-44 '>
-                  </div>
-                  <div className='text-center '>Apple Icon</div>
-                </div>
+               <AppleIcon text={text} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage* 0.8} imageShape = {imageShape}/>
               ) : (<div></div>)}
 
               {isWebVisible ? (

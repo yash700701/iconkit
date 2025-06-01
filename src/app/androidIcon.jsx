@@ -38,7 +38,7 @@ function AndroidIcon({ text, containerWidth, padding, shape, bgColor, icon, bold
 
   return (
      <div className='h-44 w-44 shadow-2xl shadow-blue-500 border-[2px] border-sky-700 rounded-2xl'>
-        <div className='flex justify-center  items-center  h-36 w-[172px] '>
+        <div className='flex justify-center  items-center  h-32 w-[172px] '>
             <div  ref={containerRef} className={`relative shadow-2xl shadow-black flex justify-center overflow-hidden items-center w-20 h-20 ${shape == "circle" ? "rounded-full" : shape == "square" ? "rounded-none" : "rounded-[25%]"} `}  style={{ backgroundColor: bgColor }} >
                 <h1 ref={textRef} className={`${icon == "text" ? "flex" : "hidden"} ${bold ? "font-bold" : ""} ${italic ? "italic" : ""}`} style={{color: textColor,  fontSize: `${fontSize}px`, lineHeight: `${containerWidth}px`, whiteSpace: "nowrap",}}>
                     {text}
@@ -58,7 +58,9 @@ function AndroidIcon({ text, containerWidth, padding, shape, bgColor, icon, bold
                 </div>
             </div>
         </div>
-        <div className='text-center '>Android Icon</div>
+        <div className='text-center px-3'>
+            <h1>Android Icon</h1>
+        </div>
     </div>
   )
 }
