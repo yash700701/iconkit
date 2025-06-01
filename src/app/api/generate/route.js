@@ -6,8 +6,6 @@ import { createCanvas , loadImage} from 'canvas';
 import sharp from 'sharp';
 import JSZip from 'jszip';
 import toIco from 'png-to-ico';
-import { IncomingForm } from 'formidable';
-import { writeFile } from 'fs/promises';
 
 export const config = {
   api: {
@@ -29,7 +27,7 @@ function drawRoundedRect(ctx, x, y, width, height, radius) {
   ctx.closePath();
 }
 
-function drawBottomRoundedRect(ctx, x, y, width, height, radius) {
+function drawBottomRoundedRect(ctx , x, y, width, height, radius) {
   ctx.beginPath();
   ctx.moveTo(x, y);
   ctx.lineTo(x + width, y); // top edge
@@ -50,7 +48,7 @@ export async function POST(req) {
     const icon = formData.get('icon');
 
     // fields
-    const file = formData.get('image') as Blob;
+    const file = formData.get('image');
     const shape = formData.get('shape');
     const imageShape = formData.get('imageShape');
     const text = formData.get('text') || '';
@@ -59,7 +57,7 @@ export async function POST(req) {
     const bold = formData.get('bold') === 'true';
     const italic = formData.get('italic') === 'true';
     // const bgType = formData.get('bgType');
-    // const padding = formData.get('padding');
+    const paddingForText = formData.get('padding');
     const badgeText = formData.get('badgeText');
     const badgeTextColor = formData.get('badgeTextColor');
     const badgeTextBgColor = formData.get('badgeTextBgColor');
@@ -72,14 +70,12 @@ export async function POST(req) {
     const downloadWeb = formData.get('downloadWeb') == 'true';
     const downloadWindows = formData.get('downloadWindows') == 'true';
 
-
     let bufferForImage;
     if(file && file.size > 0){
       const arrayBuffer = await file?.arrayBuffer();
       bufferForImage = Buffer.from(arrayBuffer)
     }
 
-  
     const zip = new JSZip();
 
     // const sizesForIos = [60, 120, 180]
@@ -89,9 +85,7 @@ export async function POST(req) {
     // const sizesForLinux = [16, 22, 24, 32, 48, 64, 96, 128, 256, 512]`
 
     if (icon === "text") {
-
       if(downloadAndroid){
-
           for (const size of sizesForAndroidLagacy) {
             const canvas = createCanvas(size, size);
             const ctx = canvas.getContext('2d'); 
@@ -110,7 +104,7 @@ export async function POST(req) {
               ctx.fill();
             }
 
-            const padding = size * 0.1;
+            const padding = size * paddingForText / 100;
 
             // === Auto-adjust font size for main text ===
             let fontSize = size;
@@ -367,7 +361,7 @@ export async function POST(req) {
               ctx.fill();
             }
 
-            const padding = size * 0.1;
+            const padding = size * paddingForText / 100;
 
             // === Auto-adjust font size for main text ===
             let fontSize = size;

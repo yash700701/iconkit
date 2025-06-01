@@ -13,7 +13,8 @@ function FaviconIcon({ text, containerWidth, padding, shape, bgColor, icon, bold
         if (!containerRef.current || !textRef.current) return;
 
         let size = 100;
-        const containerWidth = containerRef.current.offsetWidth - padding;
+        const containerWidth = containerRef.current.offsetWidth - padding * 1.2 - 25;
+        
 
         const testSpan = document.createElement('span');
         testSpan.style.position = 'absolute';
@@ -43,7 +44,7 @@ function FaviconIcon({ text, containerWidth, padding, shape, bgColor, icon, bold
                 <h1 ref={textRef} className={`${icon == "text" ? "flex" : "hidden"} ${bold ? "font-bold" : ""} ${italic ? "italic" : ""}`} style={{color: textColor,  fontSize: `${fontSize+10}px`, lineHeight: `${containerWidth}px`, whiteSpace: "nowrap",}}>
                     {text}
                 </h1>
-                <div style={{padding: paddingForImage}} className={`absolute w-10 h-10 justify-center items-center ${icon == "image" ? "flex" : "hidden"}`}>
+                <div style={{padding: paddingForImage*0.5}} className={`absolute w-10 h-10 justify-center items-center ${icon == "image" ? "flex" : "hidden"}`}>
                     <Image
                     src={preview || randomImage}
                     alt="Preview"

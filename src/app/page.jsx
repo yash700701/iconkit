@@ -34,7 +34,7 @@ export default function Home() {
   const [preview, setPreview] = useState(null);
   const [icon, setIcon] = useState("image");
   const [text, setText] = useState("IK");
-  const [padding, setPadding] = useState(40);
+  const [padding, setPadding] = useState(15);
   const [paddingForImage, setPaddingForImage] = useState(10);
   const [bold, setBold] = useState(true);
   const [italic, setItalic] = useState(true);
@@ -280,9 +280,11 @@ export default function Home() {
             <div className={`mt-2 flex-wrap ${icon == "text" ? "flex" : "hidden"}`}>
               <div className=' flex mt-2 flex-wrap gap-3'>
                 <p className='text-zinc-600'>Padding</p>
+                <button onClick={()=>setPadding(0)} className={`border-[2px] ${padding == 0 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>0</button>
+                <button onClick={()=>setPadding(5)} className={`border-[2px] ${padding == 5 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>5</button>
+                <button onClick={()=>setPadding(10)} className={`border-[2px] ${padding == 10 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>10</button>
+                <button onClick={()=>setPadding(15)} className={`border-[2px] ${padding == 15 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>15</button>
                 <button onClick={()=>setPadding(20)} className={`border-[2px] ${padding == 20 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>20</button>
-                <button onClick={()=>setPadding(30)} className={`border-[2px] ${padding == 30 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>30</button>
-                <button onClick={()=>setPadding(40)} className={`border-[2px] ${padding == 40 ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-md px-2 text-sm`}>40</button>
               </div>
             </div>
 
