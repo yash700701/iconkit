@@ -25,6 +25,7 @@ export default function Home() {
 
   const [isAndroidVisible, setIsAndroidVisible] = useState(true);
   const [isAppleVisible, setIsAppleVisible] = useState(true);
+  const [isMacVisible, setIsMacVisible] = useState(true);
   const [isWindowsVisible, setIsWindowsVisible] = useState(false);
   const [isWebVisible, setIsWebVisible] = useState(true);
   const [isLinuxVisible, setIsLinuxVisible] = useState(false);
@@ -131,6 +132,7 @@ export default function Home() {
 
     formData.append('downloadAndroid', isAndroidVisible);
     formData.append('downloadApple', isAppleVisible);
+    formData.append('downloadMac', isMacVisible);
     formData.append('downloadLinux', isLinuxVisible);
     formData.append('downloadWeb', isWebVisible);
     formData.append('downloadWindows', isWindowsVisible);
@@ -190,9 +192,15 @@ export default function Home() {
                 </button>
               </div>
               <div className={`flex items-center border-[2px] px-4 py-1 rounded-full hover:shadow-lg hover:bg-zinc-20  ${isAppleVisible ? "border-sky-700" : "border-zinc-400"}`}>
-                <p className='pr-5'>Apple</p> 
+                <p className='pr-5'>IOS</p> 
                 <button className='cursor-pointer w-5 h-5' onClick={()=>{setIsAppleVisible((prev)=>!prev)}}>
                   <Image src={isAppleVisible ? remove : select} className='h-5 w-5' alt="x" />
+                </button>
+              </div>
+              <div className={`flex items-center border-[2px] px-4 py-1 rounded-full hover:shadow-lg hover:bg-zinc-20  ${isMacVisible ? "border-sky-700" : "border-zinc-400"}`}>
+                <p className='pr-5'>MacOs</p> 
+                <button className='cursor-pointer w-5 h-5' onClick={()=>{setIsMacVisible((prev)=>!prev)}}>
+                  <Image src={isMacVisible ? remove : select} className='h-5 w-5' alt="x" />
                 </button>
               </div>
               <div className={`flex items-center border-[2px] px-4 py-1 rounded-full hover:shadow-lg hover:bg-zinc-20  ${isWebVisible ? "border-sky-700" : "border-zinc-400"}`}>
@@ -223,7 +231,7 @@ export default function Home() {
               </button>
               </Link>
               <button onClick={handleSubmit} className='flex items-center border-[2px] px-4 py-1 rounded-full hover:shadow-lg hover:bg-zinc-200 cursor-pointer'>
-                <p className='pr-5'>{downloading ? 'Processing...' : 'Download Icons'}</p>
+                <p className='pr-5'>{downloading ? 'Processing....' : 'Download Icons'}</p>
                 <Image
                 src={download}
                 alt='download'
@@ -433,6 +441,15 @@ export default function Home() {
 
               {isAppleVisible ? (
                <AppleIcon text={text} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage* 0.8} imageShape = {imageShape}/>
+              ) : (<div></div>)}
+
+              {isMacVisible ? (
+               <div className='h-44 w-44 shadow-2xl shadow-amber-500 border-[2px] border-sky-700 rounded-2xl'>
+                  <div className='text-right px-3'></div>
+                  <div className='h-36 w-44 '>
+                  </div>
+                  <div className='text-center '>MacOs Icon</div>
+                </div>
               ) : (<div></div>)}
 
               {isWebVisible ? (

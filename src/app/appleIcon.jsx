@@ -13,7 +13,7 @@ function AndroidIcon({ text, containerWidth, padding, shape, bgColor, icon, bold
         if (!containerRef.current || !textRef.current) return;
 
         let size = 100;
-        const containerWidth = containerRef.current.offsetWidth - padding;
+        const containerWidth = containerRef.current.offsetWidth - padding * 1.2 - 25;
 
         const testSpan = document.createElement('span');
         testSpan.style.position = 'absolute';
@@ -39,7 +39,7 @@ function AndroidIcon({ text, containerWidth, padding, shape, bgColor, icon, bold
   return (
      <div className='h-44 w-44 shadow-2xl shadow-blue-500 border-[2px] border-sky-700 rounded-2xl'>
         <div className='flex justify-center  items-center  h-32 w-[172px] '>
-            <div  ref={containerRef} className={`relative shadow-2xl shadow-black flex justify-center overflow-hidden items-center w-20 h-20 ${shape == "circle" ? "rounded-full" : shape == "square" ? "rounded-none" : "rounded-[25%]"} `}  style={{ backgroundColor: bgColor }} >
+            <div  ref={containerRef} className={`relative shadow-2xl shadow-black flex justify-center overflow-hidden items-center w-20 h-20 rounded-sm`}  style={{ backgroundColor: bgColor }} >
                 <h1 ref={textRef} className={`${icon == "text" ? "flex" : "hidden"} ${bold ? "font-bold" : ""} ${italic ? "italic" : ""}`} style={{color: textColor,  fontSize: `${fontSize}px`, lineHeight: `${containerWidth}px`, whiteSpace: "nowrap",}}>
                     {text}
                 </h1>

@@ -66,6 +66,7 @@ export async function POST(req) {
     // download fields
     const downloadAndroid = formData.get('downloadAndroid') == 'true';
     const downloadApple = formData.get('downloadApple') == 'true';
+    const downloadMac = formData.get('downloadMac') == 'true';
     const downloadLinux = formData.get('downloadLinux') == 'true';
     const downloadWeb = formData.get('downloadWeb') == 'true';
     const downloadWindows = formData.get('downloadWindows') == 'true';
@@ -78,10 +79,11 @@ export async function POST(req) {
 
     const zip = new JSZip();
 
-    // const sizesForIos = [60, 120, 180]
-    const sizesForAndroidLagacy = [48, 72, 96, 144, 192]
-    const sizesForAndroidAdaptive = [108, 162, 216, 324, 432]
-    const sizesForWeb = [16, 32, 48, 64, 180, 192, 512]
+    const sizesForIosApp = [[20, 2], [20, 3], [29, 2], [29, 3], [40, 2], [40, 3], [60, 2], [60, 3]];
+    const sizesForIosIpad = [[20, 1], [20, 2], [29, 1], [29, 2], [40, 1], [40, 2], [76, 1], [76, 2], [83.5, 2]];
+    const sizesForAndroidLagacy = [48, 72, 96, 144, 192];
+    const sizesForAndroidAdaptive = [108, 162, 216, 324, 432];
+    const sizesForWeb = [16, 32, 48, 64, 180, 192, 512];
     // const sizesForLinux = [16, 22, 24, 32, 48, 64, 96, 128, 256, 512]`
 
     if (icon === "text") {
@@ -335,6 +337,145 @@ export async function POST(req) {
       }
 
       if(downloadApple){
+          sizesForIosApp.map(([pt, scale]) => {
+            const size = pt*scale;
+            const canvas = createCanvas(size, size);
+            const ctx = canvas.getContext('2d'); 
+
+            // === Background shape ===
+            ctx.fillStyle = bgColor;
+            drawRoundedRect(ctx, 0, 0, size, size, size * 0); 
+            ctx.fill();
+
+            const padding = size * paddingForText / 100;
+
+            // === Auto-adjust font size for main text ===
+            let fontSize = size;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            while (fontSize > 5) {
+              ctx.font = `${italic ? 'italic ' : ''}${bold ? 'bold ' : ''}${fontSize}px sans-serif`;
+              const metrics = ctx.measureText(text);
+              const textWidth = metrics.width;
+              const textHeight = (metrics.actualBoundingBoxAscent ?? fontSize * 0.8) + (metrics.actualBoundingBoxDescent ?? fontSize * 0.2);
+
+              if (textWidth <= size - 2.5 * padding && textHeight <= size - 2.5 * padding) break;
+              fontSize -= 1;
+            }
+
+            // === Draw main text ===
+            ctx.fillStyle = textColor;
+            ctx.font = `${italic ? 'italic ' : ''}${bold ? 'bold ' : ''}${fontSize}px sans-serif`;
+            ctx.fillText(text, size / 2, size / 2);
+
+            if(badgeText.length > 0){
+              // === Draw badge strip with rounded bottom matching shape ===
+              const badgeHeight = size * 0.20;
+              ctx.save(); // Save current drawing state
+
+              if (shape === 'circle') {
+                ctx.beginPath();
+                ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI);
+                ctx.rect(0, size - badgeHeight, size, badgeHeight); // ensure bottom portion is covered
+                ctx.clip();
+              } else if (shape === 'squircle') {
+                ctx.beginPath();
+                drawBottomRoundedRect(ctx, 0, size - badgeHeight, size, badgeHeight, size * 0.25);
+                ctx.clip();
+              }
+              // Square doesn't need clipping
+
+              ctx.fillStyle = badgeTextBgColor;
+              ctx.fillRect(0, size - badgeHeight, size, badgeHeight);
+
+              ctx.restore(); // Restore so text is not clipped
+
+              // === Draw badge text ===
+              ctx.fillStyle = badgeTextColor;
+              ctx.font = `bold ${badgeHeight * 0.5}px sans-serif`;
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillText(badgeText, size / 2, size - badgeHeight / 2);
+            }
+
+            // ✅ Generate buffer from canvas and add to zip
+            const iconBuffer = canvas.toBuffer('image/png');
+            zip.file(`apple/ios_app_icon/Icon-App-${pt}x${pt}@${scale}x.png`, iconBuffer);
+            
+          })
+
+          sizesForIosIpad.map(([pt, scale]) => {
+            const size = pt*scale;
+            const canvas = createCanvas(size, size);
+            const ctx = canvas.getContext('2d'); 
+
+            // === Background shape ===
+            ctx.fillStyle = bgColor;
+            drawRoundedRect(ctx, 0, 0, size, size, size * 0); 
+            ctx.fill();
+
+            const padding = size * paddingForText / 100;
+
+            // === Auto-adjust font size for main text ===
+            let fontSize = size;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            while (fontSize > 5) {
+              ctx.font = `${italic ? 'italic ' : ''}${bold ? 'bold ' : ''}${fontSize}px sans-serif`;
+              const metrics = ctx.measureText(text);
+              const textWidth = metrics.width;
+              const textHeight = (metrics.actualBoundingBoxAscent ?? fontSize * 0.8) + (metrics.actualBoundingBoxDescent ?? fontSize * 0.2);
+
+              if (textWidth <= size - 2.5 * padding && textHeight <= size - 2.5 * padding) break;
+              fontSize -= 1;
+            }
+
+            // === Draw main text ===
+            ctx.fillStyle = textColor;
+            ctx.font = `${italic ? 'italic ' : ''}${bold ? 'bold ' : ''}${fontSize}px sans-serif`;
+            ctx.fillText(text, size / 2, size / 2);
+
+            if(badgeText.length > 0){
+              // === Draw badge strip with rounded bottom matching shape ===
+              const badgeHeight = size * 0.20;
+              ctx.save(); // Save current drawing state
+
+              if (shape === 'circle') {
+                ctx.beginPath();
+                ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI);
+                ctx.rect(0, size - badgeHeight, size, badgeHeight); // ensure bottom portion is covered
+                ctx.clip();
+              } else if (shape === 'squircle') {
+                ctx.beginPath();
+                drawBottomRoundedRect(ctx, 0, size - badgeHeight, size, badgeHeight, size * 0.25);
+                ctx.clip();
+              }
+              // Square doesn't need clipping
+
+              ctx.fillStyle = badgeTextBgColor;
+              ctx.fillRect(0, size - badgeHeight, size, badgeHeight);
+
+              ctx.restore(); // Restore so text is not clipped
+
+              // === Draw badge text ===
+              ctx.fillStyle = badgeTextColor;
+              ctx.font = `bold ${badgeHeight * 0.5}px sans-serif`;
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillText(badgeText, size / 2, size - badgeHeight / 2);
+            }
+
+            // ✅ Generate buffer from canvas and add to zip
+            const iconBuffer = canvas.toBuffer('image/png');
+            zip.file(`apple/ipad_app_icon/Icon-App-${pt}x${pt}@${scale}x.png`, iconBuffer);
+            
+          })
+
+      }
+
+      if(downloadMac){
 
       }
 
@@ -638,6 +779,10 @@ export async function POST(req) {
       }
 
       if(downloadApple){
+
+      }
+
+      if(downloadMac){
 
       }
 
