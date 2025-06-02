@@ -87,7 +87,9 @@ export async function POST(req) {
     // const sizesForLinux = [16, 22, 24, 32, 48, 64, 96, 128, 256, 512]`
 
     if (icon === "text") {
+
       if(downloadAndroid){
+
           for (const size of sizesForAndroidLagacy) {
             const canvas = createCanvas(size, size);
             const ctx = canvas.getContext('2d'); 
@@ -337,6 +339,7 @@ export async function POST(req) {
       }
 
       if(downloadApple){
+        
           sizesForIosApp.map(([pt, scale]) => {
             const size = pt*scale;
             const canvas = createCanvas(size, size);
@@ -484,6 +487,7 @@ export async function POST(req) {
       }
 
       if(downloadWeb){
+
           for (const size of sizesForWeb) {
             const canvas = createCanvas(size, size);
             const ctx = canvas.getContext('2d'); 
@@ -573,6 +577,7 @@ export async function POST(req) {
               zip.file(`favicon/icon-${size}x${size}/favicon.ico`, faviconBuffer);
             }
           }
+
       }
 
       if(downloadWindows){
@@ -780,6 +785,174 @@ export async function POST(req) {
 
       if(downloadApple){
 
+          await Promise.all(sizesForIosApp.map(async([pt, scale])=>{
+            const size = pt*scale;
+            const canvas = createCanvas(size, size);
+            const ctx = canvas.getContext('2d');
+
+            // === Background shape ===
+            ctx.fillStyle = bgColor;
+  
+            drawRoundedRect(ctx, 0, 0, size, size, size * 0); // For square
+            ctx.fill();
+          
+            // === Draw the image inside the clipped shape ===
+            const resizedImage = await sharp(bufferForImage).resize(size, size).png().toBuffer();
+            const img = await loadImage(resizedImage);
+
+            const padding = size * paddingForImage / 100;
+
+            ctx.save(); // Save state
+
+            if (imageShape === 'circle') {
+              ctx.beginPath();
+              ctx.arc(size / 2, size / 2, (size - 2 * padding) / 2, 0, 2 * Math.PI);
+              ctx.clip();
+            } else if (imageShape === 'squircle') {
+              drawRoundedRect(ctx, padding, padding, size - 2 * padding, size - 2 * padding, (size - 2 * padding) * 0.25);
+              ctx.clip();
+            } else {
+              ctx.beginPath();
+              ctx.rect(padding, padding, size - 2 * padding, size - 2 * padding);
+              ctx.clip();
+            }
+
+            // Then draw image with same padding
+            ctx.drawImage(img, padding, padding, size - 2 * padding, size - 2 * padding);
+
+            ctx.restore(); // Restore state
+
+
+            // === Draw badge strip with rounded bottom matching shape ===
+            if(badgeText.length > 0){
+              const badgeHeight = size * 0.20;
+              ctx.save(); // Save current drawing state
+
+              if (shape === 'circle') {
+                ctx.beginPath();
+                ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI);
+                ctx.rect(0, size - badgeHeight, size, badgeHeight); // ensure bottom portion is covered
+                ctx.clip();
+              } else if (shape === 'squircle') {
+                ctx.beginPath();
+                drawBottomRoundedRect(ctx, 0, size - badgeHeight, size, badgeHeight, size * 0.25);
+                ctx.clip();
+              }
+              // Square doesn't need clipping
+
+              ctx.fillStyle = badgeTextBgColor;
+              ctx.fillRect(0, size - badgeHeight, size, badgeHeight);
+
+              ctx.restore(); // Restore so text is not clipped
+
+              // === Draw badge text ===
+              ctx.fillStyle = badgeTextColor;
+              ctx.font = `bold ${badgeHeight * 0.5}px sans-serif`;
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillText(badgeText, size / 2, size - badgeHeight / 2);
+            }
+
+            // === Export final image ===
+            const outputBuffer = canvas.toBuffer('image/png');
+            if(size == 48){
+              zip.file(`android/mipmap-mdpi/ic_launcher.png`, outputBuffer);
+            }else if(size == 72){
+              zip.file(`android/mipmap-hdpi/ic_launcher.png`, outputBuffer);
+            }else if(size == 96){
+              zip.file(`android/mipmap-xhdpi/ic_launcher.png`, outputBuffer);
+            }else if(size == 144){
+              zip.file(`android/mipmap-xxhdpi/ic_launcher.png`, outputBuffer);
+            }else{
+              zip.file(`android/mipmap-xxxhdpi/ic_launcher.png`, outputBuffer);
+            }
+
+          }))
+
+          await Promise.all(sizesForIosIpad.map(async([pt, scale])=>{
+            const size = pt*scale;
+            const canvas = createCanvas(size, size);
+            const ctx = canvas.getContext('2d');
+
+            // === Background shape ===
+            ctx.fillStyle = bgColor;
+  
+            drawRoundedRect(ctx, 0, 0, size, size, size * 0); // For square
+            ctx.fill();
+          
+            // === Draw the image inside the clipped shape ===
+            const resizedImage = await sharp(bufferForImage).resize(size, size).png().toBuffer();
+            const img = await loadImage(resizedImage);
+
+            const padding = size * paddingForImage / 100;
+
+            ctx.save(); // Save state
+
+            if (imageShape === 'circle') {
+              ctx.beginPath();
+              ctx.arc(size / 2, size / 2, (size - 2 * padding) / 2, 0, 2 * Math.PI);
+              ctx.clip();
+            } else if (imageShape === 'squircle') {
+              drawRoundedRect(ctx, padding, padding, size - 2 * padding, size - 2 * padding, (size - 2 * padding) * 0.25);
+              ctx.clip();
+            } else {
+              ctx.beginPath();
+              ctx.rect(padding, padding, size - 2 * padding, size - 2 * padding);
+              ctx.clip();
+            }
+
+            // Then draw image with same padding
+            ctx.drawImage(img, padding, padding, size - 2 * padding, size - 2 * padding);
+
+            ctx.restore(); // Restore state
+
+
+            // === Draw badge strip with rounded bottom matching shape ===
+            if(badgeText.length > 0){
+              const badgeHeight = size * 0.20;
+              ctx.save(); // Save current drawing state
+
+              if (shape === 'circle') {
+                ctx.beginPath();
+                ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI);
+                ctx.rect(0, size - badgeHeight, size, badgeHeight); // ensure bottom portion is covered
+                ctx.clip();
+              } else if (shape === 'squircle') {
+                ctx.beginPath();
+                drawBottomRoundedRect(ctx, 0, size - badgeHeight, size, badgeHeight, size * 0.25);
+                ctx.clip();
+              }
+              // Square doesn't need clipping
+
+              ctx.fillStyle = badgeTextBgColor;
+              ctx.fillRect(0, size - badgeHeight, size, badgeHeight);
+
+              ctx.restore(); // Restore so text is not clipped
+
+              // === Draw badge text ===
+              ctx.fillStyle = badgeTextColor;
+              ctx.font = `bold ${badgeHeight * 0.5}px sans-serif`;
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillText(badgeText, size / 2, size - badgeHeight / 2);
+            }
+
+            // === Export final image ===
+            const outputBuffer = canvas.toBuffer('image/png');
+            if(size == 48){
+              zip.file(`android/mipmap-mdpi/ic_launcher.png`, outputBuffer);
+            }else if(size == 72){
+              zip.file(`android/mipmap-hdpi/ic_launcher.png`, outputBuffer);
+            }else if(size == 96){
+              zip.file(`android/mipmap-xhdpi/ic_launcher.png`, outputBuffer);
+            }else if(size == 144){
+              zip.file(`android/mipmap-xxhdpi/ic_launcher.png`, outputBuffer);
+            }else{
+              zip.file(`android/mipmap-xxxhdpi/ic_launcher.png`, outputBuffer);
+            }
+
+          }))
+          
       }
 
       if(downloadMac){
@@ -791,6 +964,7 @@ export async function POST(req) {
       }
 
       if(downloadWeb){
+
         for (const size of sizesForWeb) {
           const canvas = createCanvas(size, size);
           const ctx = canvas.getContext('2d');
@@ -872,9 +1046,10 @@ export async function POST(req) {
           // Only once, if needed for Windows .ico
           const icoBuffer = await toIco([outputBuffer]);
           zip.folder('favicon');
-          zip.file(`favicon/icon-${size}x${size}/favocon.ico`, icoBuffer);
+          zip.file(`favicon/icon-${size}x${size}/favicon.ico`, icoBuffer);
           
-        }  
+        } 
+
       }
 
       if(downloadWindows){

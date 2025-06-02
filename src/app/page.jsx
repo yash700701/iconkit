@@ -137,24 +137,23 @@ export default function Home() {
     formData.append('downloadWeb', isWebVisible);
     formData.append('downloadWindows', isWindowsVisible);
 
-    try {
-      const res = await axios.post('/api/generate', formData, {
-        responseType: 'blob', // Required to handle binary zip
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+   try {
+  const res = await axios.post('/api/generate', formData, {
+    responseType: 'blob', // for downloading binary
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
 
-      const blob = new Blob([res.data], { type: 'application/zip' });
-      const url = URL.createObjectURL(blob);
+  const blob = new Blob([res.data], { type: 'application/zip' });
+  const url = URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "icons.zip";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url); // Clean up
-  
-    } catch (err) {
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "icons.zip";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+} catch (err) {
       console.error("Download failed:", err);
     } finally {
       setDownloading(false)
