@@ -13,7 +13,7 @@ function WindowsIcon({ text, containerWidth, padding, shape, bgColor, icon, bold
         if (!containerRef.current || !textRef.current) return;
 
         let size = 100;
-        const containerWidth = containerRef.current.offsetWidth - padding;
+        const containerWidth = containerRef.current.offsetWidth - padding * 1.2 - 25;
 
         const testSpan = document.createElement('span');
         testSpan.style.position = 'absolute';

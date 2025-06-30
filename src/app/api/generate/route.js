@@ -1,11 +1,60 @@
 export const runtime = 'nodejs'; // Must use Node runtime
 export const dynamic = 'force-dynamic'; // Force dynamic rendering
 
+// const clipartPath = path.join(process.cwd(), `public/cliparts/heart.svg`);
+// const clipartImage = await loadImage(clipartPath);
+
 import { NextResponse } from 'next/server';
 import { createCanvas , loadImage} from 'canvas';
 import sharp from 'sharp';
 import JSZip from 'jszip';
 import toIco from 'png-to-ico';
+
+// registerFont(path.join(process.cwd(), 'public/fonts/Poppins-Regular.ttf'), {
+//   family: 'poppins',
+// });
+
+// registerFont(path.join(process.cwd(), 'public/fonts/AguDisplay-Regular-VariableFont_MORF.ttf'), {
+//   family: 'aguDisplay',
+// });
+
+// registerFont(path.join(process.cwd(), 'public/fonts/BalooChettan2-VariableFont_wght.ttf'), {
+//   family: 'balooChettan2',
+// });
+
+// registerFont(path.join(process.cwd(), 'public/fonts/Boldonse-Regular.ttf'), {
+//   family: 'boldonse',
+// });
+
+// registerFont(path.join(process.cwd(), 'public/fonts/MontserratAlternates-Regular.ttf'), {
+//   family: 'montserratAlternates',
+// });
+
+// registerFont(path.join(process.cwd(), 'public/fonts/Play-Regular.ttf'), {
+//   family: 'play',
+// });
+
+// registerFont(path.join(process.cwd(), 'public/fonts/PlayfairDisplay-VariableFont_wght.ttf'), {
+//   family: 'playfairDisplay',
+// });
+
+// registerFont(path.join(process.cwd(), 'public/fonts/PoetsenOne-Regular.ttf'), {
+//   family: 'poetsenOne',
+// });
+
+// registerFont(path.join(process.cwd(), 'public/fonts/PoetsenOne-Regular.ttf'), {
+//   family: 'poetsenOne',
+// });
+
+// registerFont(path.join(process.cwd(), 'public/fonts/SpecialElite-Regular.ttf'), {
+//   family: 'SpecialElite',
+// });
+
+// registerFont(path.join(process.cwd(), 'public/fonts/SpecialGothicExpandedOne-Regular.ttf'), {
+//   family: 'specialGothicExpandedOne',
+// });
+
+// ctx.font = `bold 32px Lobster`; // Use your font name here
 
 export const config = {
   api: {
@@ -39,31 +88,32 @@ function drawBottomRoundedRect(ctx , x, y, width, height, radius) {
   ctx.closePath();
 }
 
+function isBase64Image(str) {
+  return /^data:image\/[a-zA-Z]+;base64,/.test(str);
+}
+
+
 export async function POST(req) {
   try {
 
     const formData = await req.formData();
 
-    // icon type
     const icon = formData.get('icon');
-
-    // fields
     const file = formData.get('image');
     const shape = formData.get('shape');
     const imageShape = formData.get('imageShape');
     const text = formData.get('text') || '';
+    // const font = formData.get('font') || 'sans-serif';
     const textColor = formData.get('textColor') || '#000000';
     const bgColor = formData.get('bgColor') || '#ffffff';   
     const bold = formData.get('bold') === 'true';
     const italic = formData.get('italic') === 'true';
-    // const bgType = formData.get('bgType');
     const paddingForText = formData.get('padding');
     const badgeText = formData.get('badgeText');
     const badgeTextColor = formData.get('badgeTextColor');
     const badgeTextBgColor = formData.get('badgeTextBgColor');
     const paddingForImage = formData.get('paddingForImage');
 
-    // download fields
     const downloadAndroid = formData.get('downloadAndroid') == 'true';
     const downloadApple = formData.get('downloadApple') == 'true';
     const downloadMac = formData.get('downloadMac') == 'true';
@@ -71,10 +121,17 @@ export async function POST(req) {
     const downloadWeb = formData.get('downloadWeb') == 'true';
     const downloadWindows = formData.get('downloadWindows') == 'true';
 
+    let imageFile = file;
+
     let bufferForImage;
-    if(file && file.size > 0){
-      const arrayBuffer = await file?.arrayBuffer();
-      bufferForImage = Buffer.from(arrayBuffer)
+    if (isBase64Image(imageFile)) {
+      const base64Data = imageFile.replace(/^data:image\/\w+;base64,/, '');
+      bufferForImage = Buffer.from(base64Data, 'base64');
+    }else{
+      if (imageFile && imageFile.size > 0) {
+        const arrayBuffer = await imageFile.arrayBuffer();
+        bufferForImage = Buffer.from(arrayBuffer);   // ✅ Convert ArrayBuffer to Node Buffer
+      }
     }
 
     const zip = new JSZip();
@@ -84,7 +141,188 @@ export async function POST(req) {
     const sizesForAndroidLagacy = [48, 72, 96, 144, 192];
     const sizesForAndroidAdaptive = [108, 162, 216, 324, 432];
     const sizesForWeb = [16, 32, 48, 64, 180, 192, 512];
-    // const sizesForLinux = [16, 22, 24, 32, 48, 64, 96, 128, 256, 512]`
+
+    // if(icon == "clipart") {
+    //     if(downloadAndroid){
+
+    //       for (const size of sizesForAndroidLagacy) {
+    //         const canvas = createCanvas(size, size);
+    //         const ctx = canvas.getContext('2d');
+
+    //         // === Background shape ===
+    //         ctx.fillStyle = bgColor;
+    //         if (shape === 'circle') {
+    //           ctx.beginPath();
+    //           ctx.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI);
+    //           ctx.fill();
+    //         } else if (shape === 'square') {
+    //           drawRoundedRect(ctx, 0, 0, size, size, size * 0); // For square
+    //           ctx.fill();
+    //         } else {
+    //           drawRoundedRect(ctx, 0, 0, size, size, size * 0.25); // For squircle
+    //           ctx.fill();
+    //         }
+
+    //         const padding = size * paddingForImage / 100;
+
+    //         ctx.save(); // Save state
+
+    //         // Then draw image with same padding
+    //         ctx.drawImage(clipartImage, padding, padding, size - 2 * padding, size - 2 * padding);
+
+    //         ctx.restore(); // Restore state
+
+
+    //         // === Draw badge strip with rounded bottom matching shape ===
+    //         if(badgeText.length > 0){
+    //           const badgeHeight = size * 0.20;
+    //           ctx.save(); // Save current drawing state
+
+    //           if (shape === 'circle') {
+    //             ctx.beginPath();
+    //             ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI);
+    //             ctx.rect(0, size - badgeHeight, size, badgeHeight); // ensure bottom portion is covered
+    //             ctx.clip();
+    //           } else if (shape === 'squircle') {
+    //             ctx.beginPath();
+    //             drawBottomRoundedRect(ctx, 0, size - badgeHeight, size, badgeHeight, size * 0.25);
+    //             ctx.clip();
+    //           }
+    //           // Square doesn't need clipping
+
+    //           ctx.fillStyle = badgeTextBgColor;
+    //           ctx.fillRect(0, size - badgeHeight, size, badgeHeight);
+
+    //           ctx.restore(); // Restore so text is not clipped
+
+    //           // === Draw badge text ===
+    //           ctx.fillStyle = badgeTextColor;
+    //           ctx.font = `bold ${badgeHeight * 0.5}px sans-serif`;
+    //           ctx.textAlign = 'center';
+    //           ctx.textBaseline = 'middle';
+    //           ctx.fillText(badgeText, size / 2, size - badgeHeight / 2);
+    //         }
+
+    //         // === Export final image ===
+    //         const outputBuffer = canvas.toBuffer('image/png');
+    //         if(size == 48){
+    //           zip.file(`android/mipmap-mdpi/ic_launcher.png`, outputBuffer);
+    //         }else if(size == 72){
+    //           zip.file(`android/mipmap-hdpi/ic_launcher.png`, outputBuffer);
+    //         }else if(size == 96){
+    //           zip.file(`android/mipmap-xhdpi/ic_launcher.png`, outputBuffer);
+    //         }else if(size == 144){
+    //           zip.file(`android/mipmap-xxhdpi/ic_launcher.png`, outputBuffer);
+    //         }else{
+    //           zip.file(`android/mipmap-xxxhdpi/ic_launcher.png`, outputBuffer);
+    //         }
+
+    //       }
+
+
+    //       // for (const size of sizesForAndroidAdaptive) {
+    //       //   const canvasForBg = createCanvas(size, size);
+    //       //   const ctxForBg = canvasForBg.getContext('2d'); 
+
+    //       //   // === Background shape ===
+    //       //   ctxForBg.fillStyle = bgColor;
+    //       //   ctxForBg.fillRect(0, 0, size, size);
+    //       //   const androidAdaptiveBackgroundBuffer = canvasForBg.toBuffer('image/png');
+    //       //    if(size == 108){
+    //       //     zip.file(`android/mipmap-mdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+    //       //   }else if(size == 162){
+    //       //     zip.file(`android/mipmap-hdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+    //       //   }else if(size == 216){
+    //       //     zip.file(`android/mipmap-xhdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+    //       //   }else if(size == 324){
+    //       //     zip.file(`android/mipmap-xxhdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+    //       //   }else{
+    //       //     zip.file(`android/mipmap-xxxhdpi/ic_launcher_background.png`, androidAdaptiveBackgroundBuffer);
+    //       //   }
+
+
+    //       //   // === Draw the image inside the clipped shape ===
+    //       //   const canvasForFg = createCanvas(size, size);
+    //       //   const ctxForFg = canvasForFg.getContext('2d'); 
+
+    //       //   const resizedImage = await sharp(bufferForImage).resize(size, size).png().toBuffer();
+    //       //   const img = await loadImage(resizedImage);
+
+    //       //   const padding = size * paddingForImage / 100;
+
+    //       //   ctxForFg.save(); // Save state
+
+    //       //   if (imageShape === 'circle') {
+    //       //     ctxForFg.beginPath();
+    //       //     ctxForFg.arc(size / 2, size / 2, (size - 2 * padding) / 2, 0, 2 * Math.PI);
+    //       //     ctxForFg.clip();
+    //       //   } else if (imageShape === 'squircle') {
+    //       //     drawRoundedRect(ctxForFg, padding, padding, size - 2 * padding, size - 2 * padding, (size - 2 * padding) * 0.25);
+    //       //     ctxForFg.clip();
+    //       //   } else {
+    //       //     ctxForFg.beginPath();
+    //       //     ctxForFg.rect(padding, padding, size - 2 * padding, size - 2 * padding);
+    //       //     ctxForFg.clip();
+    //       //   }
+
+    //       //   // Then draw image with same padding
+    //       //   ctxForFg.drawImage(img, padding, padding, size - 2 * padding, size - 2 * padding);
+
+    //       //   ctxForFg.restore(); // Restore state
+
+
+    //       //   // === Draw badge strip with rounded bottom matching shape ===
+    //       //   if(badgeText.length > 0){
+    //       //     const badgeHeight = size * 0.20;
+    //       //     ctxForFg.save(); // Save current drawing state
+
+    //       //     if (shape === 'circle') {
+    //       //       ctxForFg.beginPath();
+    //       //       ctxForFg.arc(size / 2, size / 2, size / 2, 0, Math.PI);
+    //       //       ctxForFg.rect(0, size - badgeHeight, size, badgeHeight); // ensure bottom portion is covered
+    //       //       ctxForFg.clip();
+    //       //     } else if (shape === 'squircle') {
+    //       //       ctxForFg.beginPath();
+    //       //       drawBottomRoundedRect(ctxForFg, 0, size - badgeHeight, size, badgeHeight, size * 0.25);
+    //       //       ctxForFg.clip();
+    //       //     }
+    //       //     // Square doesn't need clipping
+
+    //       //     ctxForFg.fillStyle = badgeTextBgColor;
+    //       //     ctxForFg.fillRect(0, size - badgeHeight, size, badgeHeight);
+
+    //       //     ctxForFg.restore(); // Restore so text is not clipped
+
+    //       //     // === Draw badge text ===
+    //       //     ctxForFg.fillStyle = badgeTextColor;
+    //       //     ctxForFg.font = `bold ${badgeHeight * 0.5}px sans-serif`;
+    //       //     ctxForFg.textAlign = 'center';
+    //       //     ctxForFg.textBaseline = 'middle';
+    //       //     ctxForFg.fillText(badgeText, size / 2, size - badgeHeight / 2);
+    //       //   }
+
+    //       //   // === Export final image ===
+    //       //   const outputBuffer = canvasForFg.toBuffer('image/png');
+    //       //   if(size == 108){
+    //       //     zip.file(`android/mipmap-mdpi/ic_launcher_foreground.png`, outputBuffer);
+    //       //     zip.file(`android/mipmap-mdpi/ic_launcher_monochrome.png`, outputBuffer);
+    //       //   }else if(size == 162){
+    //       //     zip.file(`android/mipmap-hdpi/ic_launcher_foreground.png`, outputBuffer);
+    //       //     zip.file(`android/mipmap-hdpi/ic_launcher_monochrome.png`, outputBuffer);
+    //       //   }else if(size == 216){
+    //       //     zip.file(`android/mipmap-xhdpi/ic_launcher_foreground.png`, outputBuffer);
+    //       //     zip.file(`android/mipmap-xhdpi/ic_launcher_monochrome.png`, outputBuffer);
+    //       //   }else if(size == 324){
+    //       //     zip.file(`android/mipmap-xxhdpi/ic_launcher_foreground.png`, outputBuffer);
+    //       //     zip.file(`android/mipmap-xxhdpi/ic_launcher_monochrome.png`, outputBuffer);
+    //       //   }else{
+    //       //     zip.file(`android/mipmap-xxxhdpi/ic_launcher_foreground.png`, outputBuffer);
+    //       //     zip.file(`android/mipmap-xxxhdpi/ic_launcher_monochrome.png`, outputBuffer);
+    //       //   }
+
+    //       // }
+    //   }
+    // }
 
     if (icon === "text") {
 
@@ -339,7 +577,7 @@ export async function POST(req) {
       }
 
       if(downloadApple){
-        
+
           sizesForIosApp.map(([pt, scale]) => {
             const size = pt*scale;
             const canvas = createCanvas(size, size);

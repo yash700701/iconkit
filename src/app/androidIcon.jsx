@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react'
 import randomImage from '@/icons/Flower-icon.png'
+import heart from '../../public/cliparts/heart.svg'
 
-function AndroidIcon({ text, containerWidth, padding, shape, bgColor, icon, bold, italic, textColor, preview, badgeText, badgeTextColor, badgeTextBgColor, paddingForImage, imageShape}) {
+function AndroidIcon({ text, font, clipart, containerWidth, padding, shape, bgColor, icon, bold, italic, textColor, preview, badgeText, badgeTextColor, badgeTextBgColor, paddingForImage, imageShape}) {
 
     const containerRef = useRef(null);
     const textRef = useRef(null);
@@ -40,7 +41,7 @@ function AndroidIcon({ text, containerWidth, padding, shape, bgColor, icon, bold
      <div className='h-44 w-44 shadow-2xl shadow-blue-500 border-[2px] border-sky-700 rounded-2xl'>
         <div className='flex justify-center  items-center  h-32 w-[172px] '>
             <div  ref={containerRef} className={`relative shadow-2xl shadow-black flex justify-center overflow-hidden items-center w-20 h-20 ${shape == "circle" ? "rounded-full" : shape == "square" ? "rounded-none" : "rounded-[25%]"} `}  style={{ backgroundColor: bgColor }} >
-                <h1 ref={textRef} className={`${icon == "text" ? "flex" : "hidden"} ${bold ? "font-bold" : ""} ${italic ? "italic" : ""}`} style={{color: textColor,  fontSize: `${fontSize}px`, lineHeight: `${containerWidth}px`, whiteSpace: "nowrap",}}>
+                <h1 ref={textRef} className={`${icon == "text" ? "flex" : "hidden"} ${bold ? "font-bold" : ""} ${italic ? "italic" : ""} `} style={{color: textColor,  fontSize: `${fontSize}px`, fontFamily: `${font}`, lineHeight: `${containerWidth}px`, whiteSpace: "nowrap",}}>
                     {text}
                 </h1>
                 <div style={{padding: paddingForImage}} className={`absolute w-20 h-20 justify-center items-center ${icon == "image" ? "flex" : "hidden"}`}>
@@ -50,6 +51,16 @@ function AndroidIcon({ text, containerWidth, padding, shape, bgColor, icon, bold
                     width={10}
                     height={10}
                     className={`w-full h-full ${imageShape == "circle" ? "rounded-full" : imageShape == "square" ? "rounded-none" : "rounded-[25%]"} object-cover `}
+                    unoptimized
+                    />
+                </div>
+                <div style={{padding: paddingForImage}} className={`absolute w-20 h-20 justify-center items-center ${icon == "clipart" ? "flex" : "hidden"}`}>
+                    <Image
+                    src={heart || randomImage}
+                    alt="Preview"
+                    width={10}
+                    height={10}
+                    className={` w-full h-full ${imageShape == "circle" ? "rounded-full" : imageShape == "square" ? "rounded-none" : "rounded-[25%]"} object-cover `}
                     unoptimized
                     />
                 </div>

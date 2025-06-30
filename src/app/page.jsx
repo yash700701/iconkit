@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 import { ChromePicker } from 'react-color';
-
 import download from '@/icons/downloading.png'
 
 import { Input } from "@/components/ui/input"
@@ -18,6 +17,18 @@ import logo from '@/icons/Flower-icon.png'
 import remove from '../icons/remove.png'
 import select from '../icons/checklist (1).png'
 import Link from 'next/link';
+import ai from '@/icons/ai-technology.png'
+
+import heart from '../../public/cliparts/heart.svg'
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 
 export default function Home() {
@@ -25,8 +36,8 @@ export default function Home() {
 
   const [isAndroidVisible, setIsAndroidVisible] = useState(true);
   const [isAppleVisible, setIsAppleVisible] = useState(true);
-  const [isMacVisible, setIsMacVisible] = useState(true);
-  const [isWindowsVisible, setIsWindowsVisible] = useState(false);
+  const [isMacVisible, setIsMacVisible] = useState(false);
+  const [isWindowsVisible, setIsWindowsVisible] = useState(true);
   const [isWebVisible, setIsWebVisible] = useState(true);
   const [isLinuxVisible, setIsLinuxVisible] = useState(false);
   
@@ -35,6 +46,8 @@ export default function Home() {
   const [preview, setPreview] = useState(null);
   const [icon, setIcon] = useState("image");
   const [text, setText] = useState("IK");
+  const [font, setFont] = useState("");
+  const [clipart, setClipart] = useState("heart");
   const [padding, setPadding] = useState(15);
   const [paddingForImage, setPaddingForImage] = useState(10);
   const [bold, setBold] = useState(true);
@@ -119,6 +132,7 @@ export default function Home() {
     formData.append('imageShape', imageShape);
     formData.append('icon', icon);
     formData.append('text', text);
+    formData.append('font', font);
     formData.append('bold', bold);
     formData.append('italic', italic);
     formData.append('textColor', textColor);
@@ -137,35 +151,59 @@ export default function Home() {
     formData.append('downloadWeb', isWebVisible);
     formData.append('downloadWindows', isWindowsVisible);
 
-   try {
-  const res = await axios.post('/api/generate', formData, {
-    responseType: 'blob', // for downloading binary
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+    try {
+      const res = await axios.post('/api/generate', formData, {
+        responseType: 'blob', // for downloading binary
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
 
-  const blob = new Blob([res.data], { type: 'application/zip' });
-  const url = URL.createObjectURL(blob);
+      const blob = new Blob([res.data], { type: 'application/zip' });
+      const url = URL.createObjectURL(blob);
 
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "icons.zip";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-} catch (err) {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "icons.zip";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
       console.error("Download failed:", err);
     } finally {
-      setDownloading(false)
+        setDownloading(false)
     }
   };
+
+  // image generate
+  const [generating, setGenerating] = useState(false);
+  const [prompt, setPrompt] = useState("");
+
+  async function generateImage() {
+    setGenerating(true);
+    console.log("image generation start");
+    try {
+      const response = await axios.post('/api/generateImage', {prompt});
+      const data = response.data;
+      
+      const base64Image = data.imageBase64;
+      console.log(base64Image);
+      const imageFile = `data:image/png;base64,${base64Image}`;
+      setFile(imageFile);
+      setPreview(imageFile);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setGenerating(false);
+    }
+  }
+
 
   return (
 
     <div className='w-full min-h-screen bg-zinc-100'>
 
-       {/* header */}
-       <div className='w-full flex flex-wrap justify-between text-zinc-800 px-5 items-center py-2 border-[1px] border-black'>
+      {/* header */}
+      <div className='w-full flex flex-wrap justify-between text-zinc-800 px-5 items-center py-2 border-[1px] border-black'>
             
             {/* icon */}
             <div className='flex font-bold py-2'>
@@ -239,7 +277,14 @@ export default function Home() {
               </button>
             </div>
 
-       </div>
+      </div>
+
+      {/* downloading line */}
+      {downloading ? (
+        <div className="w-full h-[1px] bg-gray-200 overflow-hidden relative">
+          <div className="loader-bar absolute top-0 left-0 h-full w-full bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600"></div>
+        </div>
+      ) : (<></>)}
 
        {/* body */}
        <div className='grid sm:grid-cols-10'>
@@ -250,21 +295,95 @@ export default function Home() {
               <p className='text-zinc-600'>Icon</p>
               <button onClick={()=>setIcon("text")} className={`border-[2px] ${icon == "text" ? "border-sky-700" : "border-zinc-400"} cursor-pointer hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Text</button>
               <button onClick={()=>setIcon("image")} className={`border-[2px] ${icon == "image" ? "border-sky-700" : "border-zinc-400"} cursor-pointer  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Image</button>
-              <button onClick={()=>setIcon("clipart")} className={`border-[2px] ${icon == "clipart" ? "border-sky-700" : "border-zinc-400"} cursor-pointer  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Clipart</button>
+              {/* <button onClick={()=>setIcon("clipart")} className={`border-[2px] ${icon == "clipart" ? "border-sky-700" : "border-zinc-400"} cursor-pointer  hover:shadow-lg hover:bg-zinc-20 rounded-full px-4 text-sm`}>Clipart</button> */}
             </div>
+
+{/* {icon === "clipart" && (
+  <div className="mt-2 max-h-40 overflow-y-auto rounded border p-2">
+    <div className="grid grid-cols-6 gap-3">
+      {[
+        { value: "star", icon: "⭐" },
+        { value: "heart", icon: "❤️" },
+        { value: "lightbulb", icon: "💡" },
+        { value: "fire", icon: "🔥" },
+        { value: "rocket", icon: "🚀" },
+        { value: "thumbs_up", icon: "👍" },
+        { value: "sun", icon: "☀️" },
+        { value: "moon", icon: "🌙" },
+        { value: "check", icon: "✔️" },
+        { value: "cross", icon: "❌" },
+        { value: "arrow", icon: "➡️" },
+        { value: "clock", icon: "⏰" },
+    
+        // add more icons here
+      ].map((item) => (
+        <button
+          key={item.value}
+          onClick={() => setClipart(item.value)}
+          className={`text-2xl p-2 rounded hover:bg-gray-200 transition ${
+            clipart === item.value ? "bg-blue-100 border border-blue-400" : ""
+          }`}
+        >
+          {item.icon}
+        </button>
+      ))}
+    </div>
+  </div>
+)} */}
+
+
 
             <div className={`mt-2 ${icon == "text" ? "flex" : "hidden"}`} >
               <p className='text-zinc-600'>Text</p>
-              <Input type="text" placeholder="Aa" value={text} onChange={(e)=> setText(e.target.value)} className='h-5 mt-1 ml-5 rounded-sm' />
+              <Input type="text" placeholder="Aa" value={text} onChange={(e)=> setText(e.target.value)} className='h-8 mt-1 ml-5 rounded-sm' />
             </div>
+
+            {/* <div className={` ${icon == "text" ? "flex" : "hidden"} mt-2 `}>
+              <p className='text-zinc-600'>Font style</p>
+            <Select  onValueChange={(value) => setFont(value)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a font" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="poppins">Poppins</SelectItem>
+                  <SelectItem value="boldonse">Boldonse</SelectItem>
+                  <SelectItem value="aguDisplay">AguDisplay</SelectItem>
+                  <SelectItem value="balooChettan2">BalooChettan2</SelectItem>
+                  <SelectItem value="montserratAlternates">MontserratAlternates</SelectItem>
+                  <SelectItem value="play">Play</SelectItem>
+                  <SelectItem value="playfairDisplay">PlayfairDisplay</SelectItem>
+                  <SelectItem value="poetsenOne">PoetsenOne</SelectItem>
+                  <SelectItem value="roboto">Roboto</SelectItem>
+                  <SelectItem value="specialElite">SpecialElite</SelectItem>
+                  <SelectItem value="specialGothicExpandedOne">SpecialGothicExpandedOne</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            </div> */}
 
             <input
               type="file"
               name='image'
               accept="image/*"
               onChange={handleFileChange}
-              className={`border-[1px] mt-2 p-1 w-full rounded-md text-lg text-zinc-600 ${icon == "image" ? "flex" : "hidden"}`}
+              className={`border-[1px] mt-2 px-2 w-full rounded-md text-lg text-zinc-600 ${icon == "image" ? "flex" : "hidden"}`}
             />
+
+            <div className={`flex mt-2 flex-wrap gap-3   ${icon == "image" ? "flex" : "hidden"}`}>
+              <div className='flex items-center gap-2 border-[1px] px-2 rounded-md '>
+                <p className={`bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text `}>Generate with AI</p>
+                <Image
+                src={ai}
+                alt='ai logo'
+                className='w-5 h-5'
+                />
+              </div>
+              <div className="flex w-full max-w-sm items-center gap-2">
+                <Input type="text" placeholder="Write prompt" value={prompt} onChange={(e)=> setPrompt(e.target.value)} className='h-8 rounded-sm w-full' />
+                <button onClick={generateImage} className='border-[1px] bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text px-2 rounded-md text-sm shadow-black h-8'>{generating ? "generating..." : "generate"}</button>         
+              </div>
+            </div>
 
             <div className={`flex mt-2 flex-wrap gap-3   ${icon == "image" ? "flex" : "hidden"}`}>
               <p className={`text-zinc-600`}>Image shape</p>
@@ -369,7 +488,7 @@ export default function Home() {
 
             <div className={`mt-2 flex`} >
               <p className='text-zinc-600'>Badge</p>
-              <Input type="text" placeholder="Aa" value={badgeText} onChange={(e)=> setBadgeText(e.target.value)} className='h-5 w-full mt-1 ml-5 rounded-sm' />
+              <Input type="text" placeholder="Aa" value={badgeText} onChange={(e)=> setBadgeText(e.target.value)} className='h-8 w-full mt-1 ml-5 rounded-sm' />
             </div>
            
             <div className='flex flex-wrap mt-2 gap-3'>
@@ -421,12 +540,6 @@ export default function Home() {
             </div>
 
 
-
-
-
-
-
-
              <h1 className='text-sm text-zinc-500 text-center py-5'>Made by <span className='text-sky-600'><a href="https://portfolio-yashtiwari.vercel.app/">@yash</a></span></h1>
 
           </div>
@@ -435,11 +548,11 @@ export default function Home() {
           <div className='order-1 sm:order-2 flex sm:flex-wrap overflow-x-scroll gap-5 sm:gap-3 md:gap-7 lg:gap-10 sm:col-span-6 sm:p-2 md:p-8 lg:p-15 p-5'>
 
               {isAndroidVisible ? (
-               <AndroidIcon text={text} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage* 0.8} imageShape = {imageShape}/>
+               <AndroidIcon text={text} font={font} padding={padding} clipart={clipart} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage* 0.8} imageShape = {imageShape}/>
               ) : (<div></div>)}
 
               {isAppleVisible ? (
-               <AppleIcon text={text} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage* 0.8} imageShape = {imageShape}/>
+               <AppleIcon text={text} font={font} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage* 0.8} imageShape = {imageShape}/>
               ) : (<div></div>)}
 
               {isMacVisible ? (
@@ -452,11 +565,11 @@ export default function Home() {
               ) : (<div></div>)}
 
               {isWebVisible ? (
-                 <FaviconIcon text={text} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage* 0.8} imageShape = {imageShape}/>
+                 <FaviconIcon text={text} font={font} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage* 0.8} imageShape = {imageShape}/>
               ) : (<div></div>)}
               
               {isWindowsVisible ? (
-                <WindowsIcon text={text} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage* 0.8} imageShape = {imageShape}/>
+                <WindowsIcon text={text} font={font} padding={padding} containerWidth={60} shape={shape} bgColor={bgColor} icon={icon} bold={bold} italic={italic} textColor={textColor} preview={preview} badgeText={badgeText} badgeTextColor={badgeTextColor} badgeTextBgColor={badgeTextBgColor} paddingForImage={paddingForImage* 0.8} imageShape = {imageShape}/>
               ) : (<div></div>)}
 
               {isLinuxVisible ? (

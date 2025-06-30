@@ -119,3 +119,132 @@
   }
 }
 
+@keyframes flow {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .loader-bar {
+    animation: flow 1s linear infinite;
+  }
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/Poppins-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+@font-face {
+  font-family: 'Boldonse';
+  src: url('/fonts/Boldonse-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-boldonse {
+  font-family: 'Boldonse', sans-serif;
+}
+
+@font-face {
+  font-family: 'AguDisplay';
+  src: url('/fonts/AguDisplay-Regular-VariableFont_MORF.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-aguDisplay {
+  font-family: 'AguDisplay', sans-serif;
+}
+
+@font-face {
+  font-family: 'BalooChettan2';
+  src: url('/fonts/BalooChettan2-VariableFont_wght.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-balooChettan2 {
+  font-family: 'BalooChettan2', sans-serif;
+}
+
+@font-face {
+  font-family: 'MontserratAlternates';
+  src: url('/fonts/MontserratAlternates-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-montserratAlternates {
+  font-family: 'MontserratAlternates', sans-serif;
+}
+
+@font-face {
+  font-family: 'Play';
+  src: url('/fonts/Play-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-play {
+  font-family: 'Play', sans-serif;
+}
+
+@font-face {
+  font-family: 'PlayfairDisplay';
+  src: url('/fonts/PlayfairDisplay-VariableFont_wght.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-playfairDisplay {
+  font-family: 'PlayfairDisplay', sans-serif;
+}
+
+@font-face {
+  font-family: 'PoetsenOne';
+  src: url('/fonts/PoetsenOne-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-poetsenOne {
+  font-family: 'PoetsenOne', sans-serif;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('/fonts/Roboto-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-roboto {
+  font-family: 'Roboto', sans-serif;
+}
+
+@font-face {
+  font-family: 'SpecialElite';
+  src: url('/fonts/SpecialElite-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-specialElite {
+  font-family: 'SpecialElite', sans-serif;
+}
+
+@font-face {
+  font-family: 'SpecialGothicExpandedOne';
+  src: url('/fonts/SpecialGothicExpandedOne-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-specialGothicExpandedOne {
+  font-family: 'SpecialGothicExpandedOne', sans-serif;
+}

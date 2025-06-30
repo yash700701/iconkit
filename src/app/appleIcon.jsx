@@ -38,7 +38,7 @@ function AndroidIcon({ text, containerWidth, padding, shape, bgColor, icon, bold
 
   return (
      <div className='h-44 w-44 shadow-2xl shadow-blue-500 border-[2px] border-sky-700 rounded-2xl'>
-        <div className='flex justify-center  items-center  h-32 w-[172px] '>
+        <div className='flex justify-center  items-center  h-32 w-[172px]'>
             <div  ref={containerRef} className={`relative shadow-2xl shadow-black flex justify-center overflow-hidden items-center w-20 h-20 rounded-sm`}  style={{ backgroundColor: bgColor }} >
                 <h1 ref={textRef} className={`${icon == "text" ? "flex" : "hidden"} ${bold ? "font-bold" : ""} ${italic ? "italic" : ""}`} style={{color: textColor,  fontSize: `${fontSize}px`, lineHeight: `${containerWidth}px`, whiteSpace: "nowrap",}}>
                     {text}
@@ -53,7 +53,7 @@ function AndroidIcon({ text, containerWidth, padding, shape, bgColor, icon, bold
                     unoptimized
                     />
                 </div>
-                <div className={`absolute bottom-0 w-full overflow-hidden ${shape == "circle" ? "rounded-b-full" : shape == "square" ? "rounded-b-none" : "rounded-b-[25%]"}`} style={{ background : badgeTextBgColor,}}>
+                <div className={`absolute bottom-0 w-full overflow-hidden rounded-b-sm`} style={{ background : badgeTextBgColor,}}>
                     <p className={`text-center text-xs font-bold ${badgeText.length > 0 ? "h-4" : "h-0"}`} style={{color : badgeTextColor}}>{badgeText}</p>
                 </div>
             </div>
