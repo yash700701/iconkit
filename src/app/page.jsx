@@ -540,7 +540,7 @@ export default function Home() {
             </div>
 
 
-             <h1 className='text-sm text-zinc-500 text-center py-5'>Made by <span className='text-sky-600'><a href="https://portfolio-yashtiwari.vercel.app/">@yash</a></span></h1>
+             {/* <h1 className='text-sm text-zinc-500 text-center py-5'>Made by <span className='text-sky-600'><a href="https://portfolio-yashtiwari.vercel.app/">@yash</a></span></h1> */}
 
           </div>
 
